@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "crewline",
+  "description": "Team workflow for crews of AI coding agents on one repository.",
+  "owner": {
+    "name": "Mendloop",
+    "url": "https://github.com/Mendloop-Co"
+  },
+  "plugins": [
+    {
+      "name": "crewline",
+      "description": "Claims as draft PRs, a risk-tiered merge gate, a coordinator round, and cross-account collaboration through GitHub issues with watchers.",
+      "source": "./",
+      "category": "productivity"
+    }
+  ]
+}

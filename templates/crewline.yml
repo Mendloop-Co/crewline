@@ -1,0 +1,42 @@
+# crewline settings for this repository. Every crewline skill reads this file first.
+# Copy to .claude/crewline.yml in your repository and replace every <...> value.
+
+repo: <owner>/<name>                 # the GitHub repository
+work_branch: develop                 # every slice branches from and targets this branch
+production_branch: main              # changes only through a PR a human merges; agents never merge it
+owner: <name>                        # the human who makes product and scope decisions
+
+home_team: <team>                    # your own crew's label: for:<team>
+shared_accounts: [<github-login>]    # GitHub accounts your own agents post from; watchers ignore them
+index_issue: <number>                # the pinned "start here" index issue (setup creates it)
+
+coordinator:
+  name: <e.g. Lead>                  # the agent that runs the merge gate
+  session: <chat or session name>    # where your watcher sends its batches
+
+docs:                                # one home per topic; every other file links here
+  rules: CLAUDE.md                   # the rulebook every agent loads automatically
+  contributing: CONTRIBUTING.md      # branches, claims, the merge gate, collaboration
+  definition_of_done: <path#section> # the one definition of done; #section is the heading's anchor, e.g. docs/DONE.md#done
+  board: <path>                      # lanes, queues, priorities (your own crew only)
+  decisions: <path>                  # append-only decisions log
+  areas: <path>                      # "path-prefix area" per line; longest prefix wins
+  status_dir: <path>/                # one status file per area
+
+merge_gate:                          # examples; adapt both lists to your project
+  high_risk: [auth, permissions, personal data, money, multi-tenant data, schema migrations, deploy config]
+  self_merge_ok: [docs, pure UI or copy, chores]
+  reviewer_model: opus               # the independent second reviewer for high-risk diffs
+  max_review_cycles: 2               # a third only after a P0/P1
+
+watcher:
+  active_seconds: 900                # after an outside post in the last hour
+  quiet_seconds: 3600
+  ack_hours: 2                       # a for:<team> issue without "Seen" after this = that team's watcher is down
+
+agents:                              # your own crew's agents on one machine (add-agent skill)
+  root: <folder that holds each agent's working copy>
+  # Optional, only if agents run local servers or databases side by side. Examples:
+  # db_port_pattern: "5433{N}"
+  # api_port_pattern: "800{N}"
+  # web_port_pattern: "5173+{N}"

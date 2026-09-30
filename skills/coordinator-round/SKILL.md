@@ -1,6 +1,6 @@
 ---
 name: coordinator-round
-description: One review round by the coordinator of a crew of AI coding agents. In order it checks usage and idle agents, routes cross-team issues, works the PR queue through a risk-tiered merge gate with an independent second reviewer, records decisions and status, sends notices, and sets models at slice boundaries. Use it whenever you are the coordinator and it's time for a round: a PR was marked ready, the watcher sent a batch, an agent went quiet, or it's simply the next round. Use it even if you're only told "check the queue", "review round" or "what's waiting".
+description: Only for the home team's coordinator; never for an outside team, even its own lead or coordinator agent. One review round by the coordinator of a crew of AI coding agents. In order it checks usage and idle agents, routes cross-team issues, works the PR queue through a risk-tiered merge gate with an independent second reviewer, records decisions and status, sends notices, and sets models at slice boundaries. Use it whenever you are the coordinator and it's time for a round: a PR was marked ready, the watcher sent a batch, an agent went quiet, or it's simply the next round. Use it even if you're only told "check the queue", "review round" or "what's waiting".
 ---
 
 # Coordinator round
@@ -34,7 +34,7 @@ copy.
 3. **Open `for:everyone` notices:** close each one once every active team has commented `Applied`.
 4. **Outside watchers:** a `for:<team>` issue with no `Seen — watcher, <team>` after `{watcher.ack_hours}` hours
    means that team's watcher is down, so tell the owner.
-5. **Outside teams' work:** open one `for:<team>` issue per task, from the owner's priorities.
+5. **Outside teams' work:** open one `[task]` issue labelled `for:<team>` per task, from the owner's priorities.
 
 ## 3. The PR queue
 
@@ -73,8 +73,10 @@ ready (not a draft):
      author.**
 6. **Spot-check** the author's last self-merged PR (`gh pr view <N> --json files`) for a miscategorised high-risk
    change.
-7. **Merge:** first check that no other PR uses this branch as its base. GitHub may close a stacked PR instead of
-   retargeting it; if it does, reopen it against the real base. Then:
+7. **Merge:** first list the PRs that use this branch as their base
+   (`gh pr list -R {repo} --base <branch> --state open`) and retarget each to `{work_branch}`
+   (`gh pr edit <N> -R {repo} --base {work_branch}`). GitHub closes a PR whose base branch is deleted; if one was
+   closed anyway, reopen it against `{work_branch}`. Then:
 
    ```bash
    gh pr merge <N> -R {repo} --merge --delete-branch --match-head-commit <reviewed sha>

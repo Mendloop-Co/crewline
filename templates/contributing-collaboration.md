@@ -19,7 +19,7 @@ GitHub, where both sides see it. The steps are the crewline skills `collab`, `sl
 **Your work** is only what's agreed with the home team in a `for:<team>` issue. To propose something, ask in a
 `for:<home_team>` issue and start once it's agreed.
 
-**Every PR targets `<work_branch>`. Outside teams never merge.** Every outside PR gets the home coordinator's full
+**PRs target `<work_branch>`, or a parent's branch when stacked. Outside teams never merge.** Every outside PR gets the home coordinator's full
 review, written on the PR.
 
 ### Where to discuss: GitHub issues, both ways

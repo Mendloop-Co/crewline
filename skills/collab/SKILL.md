@@ -49,7 +49,7 @@ gh issue list -R {repo} --state open --label collaboration --search '"<your sign
    ```
 
    The title tag is `[question]`, `[notice]` or `[blocking]`. `[blocking]` is only for a decision you truly can't
-   make yourself.
+   make yourself. (`[task]` is the coordinator's: one piece of work handed to a team.)
 
    The body uses the same fields as `.github/ISSUE_TEMPLATE/collaboration.md`, in the same order:
    - the type;
@@ -108,7 +108,7 @@ how they learn.
 1. Creates the label: `gh label create "for:<team>" -R {repo}`.
 2. Adds the team's row to the index.
 3. Closes the notice.
-4. Hands the team its work as one `for:<team>` issue per task.
+4. Hands the team its work as one `[task]` issue labelled `for:<team>` per task.
 
 ## Never
 

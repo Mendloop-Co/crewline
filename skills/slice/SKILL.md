@@ -40,11 +40,17 @@ win.
    If your project has schema migrations and the slice adds one, put its number in the title, e.g.
    `[migr <app>/<NNNN>]`, so clashes show up in the PR list. Never target `{production_branch}`.
 
+   **A stacked PR** (built on another open PR) uses `--base <parent's branch>` instead, and says "stacked on #N"
+   in its body. The coordinator retargets it to `{work_branch}` before merging the parent; then you merge
+   `{work_branch}` in.
+
 ## Build
 
 - Work only in your own working copy. Never run anything inside another agent's.
 - Follow `{docs.rules}` in full.
 - Batch your fixes, run the affected tests, then push once. Don't push, fix, push.
+- Bring `{work_branch}` in with `git merge`. **Never rebase or force-push a branch that has been pushed:** others
+  may have read, reviewed or built on it.
 
 ## Finish
 
@@ -68,9 +74,13 @@ win.
 5. **Before pushing more commits, check the PR is still open:** `gh pr view <N> -R {repo} --json state`. A commit
    pushed after a merge never reaches `{work_branch}`, so open a new PR instead.
 6. **Mark it ready:** `gh pr ready <N> -R {repo}`. Marking it ready replaces any "ready" message.
+   - **Review fixes on a PR that's already ready:** put it back to draft with `gh pr ready <N> -R {repo} --undo`
+     when you start them, and mark it ready again when they're done. The PR's state is the signal; without it,
+     "ready again" has nothing to change.
    - **The home team** self-merges only `{merge_gate.self_merge_ok}`. Everything else waits for the coordinator.
    - **Outside teams never merge.**
 7. **After the merge:**
-   - delete the branch, but first check no other PR uses it as its base (GitHub may close a stacked PR);
+   - delete the branch, but first check no other PR uses it as its base. The coordinator retargets those children
+     to `{work_branch}` first, because GitHub closes a PR whose base branch is deleted;
    - run the reading routine again;
    - start the next slice.

@@ -42,7 +42,7 @@ Do this on the first tick, and again whenever routing fails.
    | the home team | posts by `{shared_accounts}` (your own agents) | everything else that's new. Flag an outside issue with no `for:` label. |
    | an outside team | posts signed `, <team>` (your own team) | issues labelled `for:<team>` or `for:everyone`, and replies on issues your team opened |
 4. **Nothing left:** write `NOW` to the state file, send nothing, and end the tick as a no-op.
-5. **Something left: route it in one batch.** List `[blocking]` first, then `[question]`, `[notice]`, then new PRs.
+5. **Something left: route it in one batch.** List `[blocking]` first, then `[task]`, `[question]`, `[notice]`, then new PRs.
    Each item gets its link, author or signature, labels and a one-line summary.
    - **Home team:** send ONE message to the coordinator's session `{coordinator.session}`. On each `[blocking]` item
      only, comment: `Seen by the {home_team} watcher; routed to {coordinator.name}. Keep working on another slice

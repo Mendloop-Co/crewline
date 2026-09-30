@@ -59,6 +59,10 @@ ready (not a draft):
    fix it. Say what is right too, so the team learns the codebase's patterns.
 5. **Checks on every PR:**
    - the body follows the template: areas, migrations, impact, assumptions, tests, DoD, decisions;
+   - **no accidental closing keyword:** `close`, `fix` or `resolve` (in any form) directly before `#N`, in the body
+     or a commit message, closes N when it lands on the default branch. If that isn't meant, the author changes it
+     to `Refs #N` first. Check with:
+     `gh pr view <N> -R {repo} --json body,commits --jq '.body, .commits[].messageHeadline, .commits[].messageBody' | grep -inE '(clos(e|es|ed)|fix(es|ed)?|resolv(e|es|ed)) +#[0-9]+'`;
    - it updates the doc that owns any behaviour it changed, and a rule change updates its matching skill;
    - **migrations:** one order across all open PRs, set by you when claims overlap. Whichever merges out of order
      renumbers at merge, and there's a single migration leaf;

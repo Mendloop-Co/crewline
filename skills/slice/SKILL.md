@@ -61,6 +61,10 @@ win.
    - assumptions, tests, and DoD evidence;
    - new owner decisions as lines for `{docs.decisions}`. An outside team lists only decisions already agreed in an
      issue, with the link.
+
+   **Referring to another PR or issue:** write `Refs #N`. Never put `close`, `fix` or `resolve` (in any form)
+   directly before `#N` in a commit message or the PR body unless you mean to close N. GitHub closes it as soon
+   as the text lands on the default branch, even when N is someone else's open PR.
 5. **Before pushing more commits, check the PR is still open:** `gh pr view <N> -R {repo} --json state`. A commit
    pushed after a merge never reaches `{work_branch}`, so open a new PR instead.
 6. **Mark it ready:** `gh pr ready <N> -R {repo}`. Marking it ready replaces any "ready" message.

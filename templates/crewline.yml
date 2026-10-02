@@ -22,6 +22,12 @@ docs:                                # one home per topic; every other file link
   decisions: <path>                  # append-only decisions log
   areas: <path>                      # "path-prefix area" per line; longest prefix wins
   status_dir: <path>/                # one status file per area
+  specs: <path>/                     # plans and specs, one file per topic, approved before code
+
+planner:                             # optional: the agent that turns the owner's ideas into plans (planner skill)
+  session: <chat or session name>    # the owner's approvals are read here
+  owner_language: English            # the language it talks to the owner in
+  side_plans: <folder>               # optional: plans that need no code (business, operations); unset = in the chat
 
 merge_gate:                          # examples; adapt both lists to your project
   high_risk: [auth, permissions, personal data, money, multi-tenant data, schema migrations, deploy config]

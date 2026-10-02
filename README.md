@@ -19,6 +19,7 @@ teams. crewline is that workflow, packaged as Claude Code skills. It came out of
 | **GitHub issues between teams.** One issue per topic, labelled for who must answer, every post signed. | Sessions on different accounts can't message each other, and one giant thread nobody can follow. |
 | **Nobody blocks.** State your assumption, build on it, list it in the PR. | Agents idling for hours waiting for an answer. |
 | **Every team runs a watcher.** It acknowledges new issues and routes them, and never answers. | Agents only see a comment when they look, and sessions stop between tasks. |
+| **Ideas become plans before code.** An optional planner takes the owner's ideas, asks only what the owner alone can answer, and hands the coordinator an approved spec. | Half-formed ideas reach builders straight from chat, and the owner's "yes" exists only in someone's memory. |
 | **Workflow changes are announced.** A `for:everyone` notice, which every team acknowledges with "Applied". | A rule changes, and half the crew keeps working to the old one. |
 
 ## Install
@@ -49,6 +50,7 @@ It shows you each file before writing it.
 | `crewline:collab` | every agent | the reading routine; asking, answering and closing; announcing a change or freeze; a team joining |
 | `crewline:watcher` | one per team | one tick, run as `/loop /crewline:watcher <team>`: notice, acknowledge, route, pace itself |
 | `crewline:coordinator-round` | the coordinator | one review round: usage and idle agents, cross-team issues, the PR queue by risk, decisions, notices |
+| `crewline:planner` | one planner agent, optional | the owner's business ideas become plans: what exists, the owner's questions, a spec PR to the coordinator once the owner says yes |
 | `crewline:add-agent` | the owner and coordinator | adds an agent to the home crew with its own working copy, database and ports |
 
 Every skill reads your settings file, so the skills themselves contain no project names.

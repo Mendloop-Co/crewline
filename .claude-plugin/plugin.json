@@ -1,6 +1,6 @@
 {
   "name": "crewline",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Run a crew of AI coding agents on one repository like a real team: claims as draft PRs, a risk-tiered merge gate, a coordinator, and cross-account collaboration through GitHub issues with watchers.",
   "author": {
     "name": "Mendloop",

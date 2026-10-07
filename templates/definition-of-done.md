@@ -17,7 +17,7 @@ touches anything in `merge_gate.high_risk`; otherwise the **light set** does.
 9. A security review when auth, permissions or personal data are involved.
 
 **A hotfix** (a production fix that skips a release freeze): the tests for the fix pass, and one review by
-`merge_gate.reviewer_model`. It's merged back into the work branch the same day, and the incident's issue gets a
-note: the cause, the fix, and the test or check added.
+`merge_gate.reviewer_model`. The merge-back PR and the incident note are in the contributing guide, "Production
+problems".
 
 Replace these lines with your project's own tools and commands as they settle.

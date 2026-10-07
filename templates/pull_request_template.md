@@ -1,5 +1,6 @@
 <!--
-Base branch: the work branch, never production. Title: type(scope): subject, where scope is the main area; add the migration number if the slice adds one.
+Base branch: the work branch, never production. The exceptions: a stacked PR targets its parent's branch, and a hotfix targets production (the contributing guide, "Production problems"); its author opens the merge-back PR to the work branch the same day.
+Title: type(scope): subject, where scope is the main area; add the migration number if the slice adds one. Refer to other PRs and issues as "Refs #N".
 Open it as a draft as soon as you start: the draft is your claim.
 -->
 

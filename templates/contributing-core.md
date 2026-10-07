@@ -17,14 +17,18 @@ Never commit straight to `<work_branch>` or `<production_branch>`.
 1. **Plan first for anything new.** A short spec is approved before building.
 2. **Claim it** with a draft PR from `<work_branch>` as soon as you start. The open PR list is the live list of who
    does what. Check it for an overlapping claim before you start. If the slice adds a schema migration, put its
-   number in the title so clashes show. A PR targets `<work_branch>`; the one exception is a stacked PR, which
-   targets its parent's branch until the parent merges and says so in its body.
+   number in the title so clashes show. A PR targets `<work_branch>`, with two exceptions: a stacked PR targets its
+   parent's branch until the parent merges and says so in its body, and a hotfix targets `<production_branch>`
+   ("Production problems").
 3. **Build** in your own working copy. Batch your fixes, run the affected tests, then push once. Bring
    `<work_branch>` in with `git merge`; never rebase or force-push a branch that has been pushed.
 4. **Meet the definition of done** (`<docs.definition_of_done>`), sized by risk.
 5. **Describe it in the PR body** (the template lists what), and update the doc that owns any behaviour you changed
    in the same PR. New owner decisions go in the body under `## Decisions`, never into `<docs.decisions>` itself:
-   the coordinator appends them when it merges.
+   the coordinator appends them after the merge.
+   - **Refer to another PR or issue as `Refs #N`.** `close`, `fix` or `resolve` (in any form) directly before `#N`,
+     in the PR body or a commit message, closes N as soon as the text lands on the default branch, even when N is
+     someone else's open PR. Use one only when you mean to close N.
 6. **Mark it ready.** That replaces any "ready" message. While you work on review fixes, put it back to draft
    (`gh pr ready <N> --undo`), then mark it ready again.
 7. **Check the PR is still open before you push more commits** (`gh pr view <N> --json state`). A commit pushed
@@ -36,18 +40,21 @@ Never commit straight to `<work_branch>` or `<production_branch>`.
   between modules. These get an independent second reviewer too.
 - **Self-merge allowed** once the DoD evidence is in the body: `<merge_gate.self_merge_ok>`. This is for the home
   team only; **outside teams never merge.**
+- **The coordinator's own changes** from a review round (decisions rows, status, the board) go in one small docs PR
+  per round, which it self-merges as docs.
 - **`<production_branch>`:** only a human.
 
-After a merge, delete the head branch. First list the PRs that use it as their base and retarget them to
-`<work_branch>`: GitHub closes a PR whose base branch is deleted, for good. It can't be reopened or retargeted, only
-replaced by a new PR from the same branch.
+**Before deleting a merged branch, retarget its children.** List the PRs that use it as their base from GitHub
+(`gh pr list --base <branch> --state open`), not from memory, and retarget each to `<work_branch>`. GitHub closes a
+PR whose base branch is deleted, for good: it can't be reopened or retargeted, only replaced by a new PR from the
+same branch with its body copied over.
 
 ## The owner's decisions and steps
 
 - **Only the owner's own words are a decision.** An agent passing on an instruction, the coordinator included, never
-  stands in for them: **a relay is not approval.** Record each decision as a row in the PR that uses it, with the
-  owner's words copied exactly and where they said them (the chat's name, the date). If two answers differ, the
-  later one governs.
+  stands in for them: **a relay is not approval.** Confirm a relayed decision in the owner's own chat before acting
+  on it. Record each decision as a row in the PR that uses it, with the owner's words copied exactly and where they
+  said them (the chat's name, the date). If two answers differ, the later one governs.
 - **Whatever waits on the owner is an issue labelled `needs:owner`:** the question, the options with a
   recommendation, and what waits on the answer. The owner answers in chat as usual. The agent they told then
   copies the exact words onto the issue as a comment, acts, records the decision row and closes it. Never close
@@ -67,9 +74,10 @@ replaced by a new PR from the same branch.
 - **Roll back first, investigate second.** If the release is under an hour old and the problem started with it,
   roll back to the previous release. Otherwise fix forward. A rollback only works if the release before can still
   read what the new one wrote, so schema changes add and never drop or rename in the same release.
-- **The hotfix lane.** A production fix may skip a release freeze. Branch from `<production_branch>`, get one review
-  by `<merge_gate.reviewer_model>`, and let a human merge and deploy it. Then merge it back into `<work_branch>` the
-  same day.
+- **The hotfix lane.** A production fix may skip a release freeze, not the review. Branch from
+  `<production_branch>`, claim it with a draft PR against it, and keep the fix as small as the problem. Get one
+  review by `<merge_gate.reviewer_model>`; a human merges and deploys it.
+- **The hotfix author opens the merge-back PR** to `<work_branch>` the same day, under the normal gate.
 - **After every incident,** one note on its issue: the cause, the fix, and the test or check added. A repeat gets a
   check that would have caught it.
 
@@ -81,12 +89,29 @@ replaced by a new PR from the same branch.
 - **A script is small and strict:** bash or standard-library Python, GitHub through `gh`, a body read fresh before
   it is changed, a refusal in one line (changing nothing) instead of a guess, one line of output per fact, and a test
   with a stand-in `gh`. It never reads or prints a secret.
+- **Worth writing for your repo** (not shipped with crewline, which ships only the watcher):
+  - `queue <agent>`: your next items, one line each, if the queue is kept as labelled issues;
+  - `say`: posts a comment with your signature from an environment variable, and refuses a body not signed by form;
+  - `edit-line`: reads an issue body fresh, refuses unless the old line appears exactly once, writes back only that
+    change;
+  - `notices`: each open `for:everyone` notice and the active teams that haven't applied it;
+  - `inbox`: the open `needs:owner` issues, oldest first;
+  - `decisions`: the `## Decisions` rows of PRs merged since its last run, as a draft block; it never commits;
+  - `pr-brief <N>`: one line per fact: head SHA, base, mergeable, closing keywords, child PRs, files by area,
+    migrations, tier, outside author. It is also the input for a second reviewer;
+  - `pr-check <N>`: the mechanical part of the gate, `ok` or `FAIL <why>` per line, exit 1 on any FAIL: open, ready,
+    base, mergeable, a filled DoD section, `## Decisions` rows of the right shape, no edit to the decisions log. It
+    states the tier but never decides it;
+  - `merge <N> [<reviewed sha>]`: runs `pr-check`, refuses if the head moved, retargets child PRs, merges with
+    `--match-head-commit`; `--dry-run` prints the writes instead;
+  - `release-cut`: refuses unless the environment runs the commit, creates the release branch, and drafts the PR
+    body with the PRs since the last release and every migration that drops or renames. A human still merges.
 
 ## One working session per task, and the right model
 
 - **Start each slice in a fresh session** once none of your PRs is still open. A long conversation is re-read on
   every call and is most of an agent's cost. The rules live in the repository and the work state on GitHub, so
-  nothing is lost.
+  nothing is lost. With a PR still open or a fix round likely, carry on in the same session.
 - **Choose the model by the slice's risk:** the strongest for anything in `<merge_gate.high_risk>` and for design
   work, a faster one for docs and routine fixes. Never switch mid-task.
 

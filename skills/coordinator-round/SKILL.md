@@ -34,8 +34,8 @@ copy.
 2. **`[notice] New team: <team>`:** create its `for:<team>` label, add it to the index #{index_issue}, then close the
    notice.
 3. **Open `for:everyone` notices:** close each one once every active team has commented `Applied`.
-4. **Outside watchers:** a `for:<team>` issue with no `Seen — watcher, <team>` after `{watcher.ack_hours}` hours
-   means that team's watcher is down, so tell the owner.
+4. **Outside watchers:** your watcher's `[watcher-down]` line (or, without the script, a `for:<team>` issue with no
+   `Seen — watcher, <team>` after `{watcher.ack_hours}` hours) means that team's watcher is down, so tell the owner.
 5. **Outside teams' work:** open one `[task]` issue labelled `for:<team>` per task, from the owner's priorities.
 
 ## 3. The PR queue

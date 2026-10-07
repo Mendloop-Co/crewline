@@ -49,7 +49,8 @@ Read at session start, before opening a PR or marking one ready, and after each 
 
 ### Every team runs a watcher
 
-Each team's watcher checks at least hourly, and every 15 minutes after recent activity. It acknowledges each new
+Each team's watcher is the crewline script: it polls every minute and wakes its session only when something
+arrived (the manual tick, where the script can't run, checks at least hourly). It acknowledges each new
 issue for its team with `Seen — watcher, <team>`, and routes items to that team's agents. It never answers. A team's
 issue with no `Seen` after two hours means its watcher is down.
 

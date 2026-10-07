@@ -5,12 +5,14 @@ repo: <owner>/<name>                 # the GitHub repository
 work_branch: develop                 # every slice branches from and targets this branch
 production_branch: main              # changes only through a PR a human merges; agents never merge it
 owner: <name>                        # the human who makes product and scope decisions
-owner_accounts: [<github-login>]     # the owner's own GitHub accounts, or []; the watcher routes their posts first
+owner_accounts: [<github-login>]     # the owner's own GitHub accounts, or []; the watcher routes their posts first.
+                                     # Only logins agents never post from; a shared login goes in shared_accounts only
 
 home_team: <team>                    # your own crew's label: for:<team>
-shared_accounts: [<github-login>]    # GitHub accounts your own agents post from; watchers ignore them
-agent_names: [Agent {N}]             # how your own agents sign; {N} is any number. A post is signed when its
-                                     # first line starts with a name, or its last line is "— <name>, <team>"
+shared_accounts: [<github-login>]    # GitHub accounts your own agents post from; watchers ignore their signed posts
+agent_names: ["Agent {N}"]           # how your own agents sign; {N} is any number. List the coordinator's and any other
+                                     # name without a number too, e.g. ["Agent {N}", "Lead"]. A post is signed when its
+                                     # first line starts "<name>:", or its last line is "— <name>, <team>"
 index_issue: <number>                # the pinned "start here" index issue (setup creates it)
 
 coordinator:
@@ -27,7 +29,7 @@ docs:                                # one home per topic; every other file link
   status_dir: <path>/                # one status file per area
   specs: <path>/                     # plans and specs, one file per topic, approved before code
 
-planner:                             # optional: the agent that turns the owner's ideas into plans (planner skill)
+planner:                             # optional, delete if unused: the agent that turns ideas into plans (planner skill)
   session: <chat or session name>    # the owner's approvals are read here
   owner_language: English            # the language it talks to the owner in
   side_plans: <folder>               # optional: plans that need no code (business, operations); unset = in the chat
@@ -47,9 +49,10 @@ watcher:
   owner_labels: [needs:owner, owner:do]  # an unsigned post from shared_accounts here is the owner's
   # alert_label: alert               # optional: issues with this label are live incidents, routed first
 
-agents:                              # your own crew's agents on one machine (add-agent skill)
+agents:                              # optional, delete if unused: your crew's agents on one machine (add-agent skill)
   root: <folder that holds each agent's working copy>
-  # Optional, only if agents run local servers or databases side by side. Examples:
+  # Optional, only if agents run local servers or databases side by side. "800{N}" appends the number
+  # (agent 3: 8003); "5173+{N}" adds it (agent 3: 5176). Examples:
   # db_port_pattern: "5433{N}"
   # api_port_pattern: "800{N}"
   # web_port_pattern: "5173+{N}"

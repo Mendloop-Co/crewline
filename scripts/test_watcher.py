@@ -12,7 +12,7 @@ from contextlib import redirect_stdout
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 import watcher  # noqa: E402
 
 NOW = datetime(2026, 10, 7, 12, 0, tzinfo=timezone.utc)
@@ -30,7 +30,7 @@ owner: Pat
 owner_accounts: [{BOSS}]
 home_team: acme
 shared_accounts: [{BOT}, "other-bot"]
-agent_names: [Agent {{N}}, Lead]
+agent_names: ["Agent {{N}}", Lead]
 coordinator:
   name: Lead
   session: Acme lead
@@ -130,11 +130,18 @@ class SettingsReader(unittest.TestCase):
         self.assertEqual(data["merge_gate"]["max_review_cycles"], 2)
         self.assertEqual(data["watcher"]["owner_labels"], ["needs:owner", "owner:do"])
 
+    def test_quoted_list_items(self):
+        data = watcher.read_settings('a: ["Agent {N}", "Lead"]\nb: ["x, y", z]\nc: []\n')
+        self.assertEqual(data["a"], ["Agent {N}", "Lead"])
+        self.assertEqual(data["b"], ["x, y", "z"])
+        self.assertEqual(data["c"], [])
+
     def test_the_shipped_template_parses(self):
-        template = Path(__file__).parent.parent / "templates" / "crewline.yml"
+        template = Path(__file__).resolve().parent.parent / "templates" / "crewline.yml"
         data = watcher.read_settings(template.read_text(encoding="utf-8"))
         self.assertIn("watcher", data)
         self.assertIsInstance(data["watcher"], dict)
+        self.assertEqual(data["agent_names"], ["Agent {N}"])
         with self.assertRaises(ValueError):  # placeholders left in
             watcher.Settings(data)
 
@@ -479,7 +486,9 @@ class Main(unittest.TestCase):
             (repo / ".claude").mkdir(parents=True)
             (repo / ".claude" / "crewline.yml").write_text(CONFIG, encoding="utf-8")
             (repo / "sub").mkdir()
-            watcher.gh = Fake(**{"issues?since": [issue(8, "outsider", pr=True)]})
+            new = issue(8, "outsider", pr=True)
+            new["created_at"] = watcher.iso(datetime.now(timezone.utc))  # main() uses the real clock
+            watcher.gh = Fake(**{"issues?since": [new]})
             out = io.StringIO()
             with redirect_stdout(out):
                 code = watcher.main(

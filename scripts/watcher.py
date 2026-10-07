@@ -85,7 +85,7 @@ def _scalar(text: str):
 def _value(text: str):
     text = text.strip()
     if text.startswith("[") and text.endswith("]"):
-        items = re.findall(r"\"[^\"]*\"|'[^']*'|[^,]+", text[1:-1])
+        items = re.findall(r"\s*(\"[^\"]*\"|'[^']*'|[^,]+)", text[1:-1])  # "a, b" stays one item
         return [_scalar(item) for item in items if item.strip()]
     return _scalar(text)
 

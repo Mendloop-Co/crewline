@@ -161,6 +161,16 @@ class SettingsReader(unittest.TestCase):
         )
         self.assertEqual(off.alert_label, "")
 
+    def test_a_login_in_both_lists_is_shared_not_the_owner(self):
+        s = watcher.Settings(
+            watcher.read_settings(
+                f"repo: {REPO}\nhome_team: acme\nowner_accounts: [{BOSS}, {BOT}]\n"
+                f"shared_accounts: [{BOT}]\n"
+            )
+        )
+        self.assertEqual((s.owners, s.shared, s.both), ({BOSS}, {BOT}, [BOT]))
+        self.assertEqual(SETTINGS.both, [])
+
 
 class Signing(unittest.TestCase):
     names = ["Agent {N}", "Lead"]
@@ -445,6 +455,24 @@ class TeamSide(Base):
         self.assertIs(type(watcher.make_watcher(state, SETTINGS, "acme")), watcher.Watcher)
         self.assertIs(type(watcher.make_watcher(state, SETTINGS, "beta")), watcher.TeamWatcher)
 
+    def test_team_names_and_labels_ignore_case(self):
+        state = Path(self.dir.name)
+        upper = watcher.Settings(watcher.read_settings(f"repo: {REPO}\nhome_team: Acme\n"))
+        self.assertIs(type(watcher.make_watcher(state, upper, "acme")), watcher.Watcher)
+        self.assertIs(type(watcher.make_watcher(state, upper, "ACME")), watcher.Watcher)
+        self.w = watcher.TeamWatcher(state, SETTINGS, "Beta")
+        fake = Fake(
+            **{
+                "search/issues": NOTICE,
+                "issues?since": [issue(22, BOT, ["for:BETA"])],
+                "issues/22/comments": [],
+            }
+        )
+        self.assertEqual([line.split()[0] for line in self.run_once(fake)], ["[ack]", "[issue]"])
+        home = watcher.Watcher(state / "home", upper)
+        watcher.gh = Fake(**{"issues?state=open": [issue(3, labels=["for:ACME"], created=150)]})
+        self.assertEqual(home.once(NOW, SINCE), [])  # its own label: no [watcher-down]
+
 
 class OneWatcher(unittest.TestCase):
     def test_the_newest_watcher_takes_over_and_the_older_one_steps_aside(self):
@@ -538,6 +566,40 @@ class Main(unittest.TestCase):
             with redirect_stdout(out):
                 self.assertEqual(watcher.main(["--once", "--repo-dir", tmp]), 2)
             self.assertIn("fill in `repo`", out.getvalue())
+
+    def run_main(self, tmp, config, *args):
+        repo = Path(tmp) / "repo"
+        (repo / ".claude").mkdir(parents=True, exist_ok=True)
+        (repo / ".claude" / "crewline.yml").write_text(config, encoding="utf-8")
+        out = io.StringIO()
+        with redirect_stdout(out):
+            code = watcher.main(
+                ["--once", "--repo-dir", str(repo), "--state-dir", str(Path(tmp) / "s"), *args]
+            )
+        return code, out.getvalue().splitlines()
+
+    def test_once_errors_are_a_line_and_a_non_zero_exit(self):
+        def broken(path):
+            raise RuntimeError("HTTP 502")
+
+        with tempfile.TemporaryDirectory() as tmp:
+            watcher.gh = broken
+            code, lines = self.run_main(tmp, CONFIG)
+            self.assertEqual(code, 1)
+            self.assertEqual(lines, ["[watcher-error] GitHub could not be read: HTTP 502"])
+            code, lines = self.run_main(tmp, CONFIG, "--since", "yesterday")
+            self.assertEqual(code, 2)
+            self.assertTrue(lines[0].startswith("[watcher-error] --since:"))
+
+    def test_a_login_in_both_lists_is_said_once_at_start(self):
+        both = CONFIG.replace(f"owner_accounts: [{BOSS}]", f"owner_accounts: [{BOSS}, {BOT}]")
+        with tempfile.TemporaryDirectory() as tmp:
+            watcher.gh = Fake()
+            code, lines = self.run_main(tmp, both)
+            self.assertEqual(code, 0)
+            self.assertEqual(len(lines), 2)
+            self.assertTrue(lines[0].startswith(f"[watcher-error] crewline.yml: {BOT} in both"))
+            self.assertEqual(lines[1], "nothing new")
 
 
 if __name__ == "__main__":

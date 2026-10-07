@@ -27,8 +27,9 @@ Self-update, every `watcher.update_minutes`: it pulls the clone, only when the c
 on `work_branch`, then re-reads crewline.yml (new settings apply at once, silently). If this script
 file changed or vanished (a copy in the repository was pulled, or the plugin was updated), it prints
 [watcher-updated] and exits. One watcher per repository and side: the newest takes over, and an
-older one exits at its next pass. State lives in ~/.crewline-watcher/<owner>-<name>/<side>/, outside
-the repository. Python 3.9+, standard library only; GitHub through the `gh` CLI and its login.
+older one exits at its next pass. State lives in ~/.crewline-watcher/<owner>-<name>/<side>/, all in
+lower case, outside the repository. Team names and labels compare case-insensitively. Python 3.9+,
+standard library only; GitHub through the `gh` CLI and its login.
 """
 
 from __future__ import annotations
@@ -134,13 +135,15 @@ class Settings:
         if not re.fullmatch(r"[\w.-]+/[\w.-]+", self.repo):
             raise ValueError(f"crewline.yml: `repo` must be owner/name (now {self.repo!r})")
         self.work_branch = need("work_branch", data.get("work_branch", "develop"))
-        self.home_team = need("home_team", data.get("home_team"))
+        self.home_team = need("home_team", data.get("home_team")).lower()  # "Acme" is "acme"
         self.shared = {need("shared_accounts", a) for a in _list(data.get("shared_accounts"))}
-        self.owners = {need("owner_accounts", a) for a in _list(data.get("owner_accounts"))}
+        owners = {need("owner_accounts", a) for a in _list(data.get("owner_accounts"))}
+        self.both = sorted(owners & self.shared)  # a login the agents post from is never the owner
+        self.owners = owners - self.shared
         self.agent_names = _list(data.get("agent_names")) or ["Agent {N}"]
         self.alert_label = str(watch.get("alert_label", "") or "")  # unset = no alerts
         owner_labels = watch.get("owner_labels", ["needs:owner", "owner:do"])
-        self.owner_labels = set(_list(owner_labels))
+        self.owner_labels = {label.lower() for label in _list(owner_labels)}
         self.poll_seconds = max(30, int(watch.get("poll_seconds", 60)))
         self.update_minutes = max(1, int(watch.get("update_minutes", 15)))
         self.ack_hours = float(watch.get("ack_hours", 2))
@@ -242,7 +245,8 @@ def confirmation(body: str | None) -> bool:
 
 
 def labels_of(issue: dict) -> set[str]:
-    return {label["name"] for label in issue.get("labels", [])}
+    """Lower case: team names and labels compare case-insensitively."""
+    return {label["name"].lower() for label in issue.get("labels", [])}
 
 
 def short(text: str | None, most: int = 90) -> str:
@@ -403,7 +407,7 @@ class Watcher:
         self.alerts(now, found)
         self.watchers_down(now, found)
         self.review_requests(found)
-        alert = self.s.alert_label
+        alert = self.s.alert_label.lower()
 
         for issue in self.api(f"issues?since={after}&state=all&per_page=100"):
             self._issues[issue["number"]] = issue
@@ -479,7 +483,7 @@ class TeamWatcher(Watcher):
 
     def __init__(self, state_dir: Path, settings: Settings, team: str):
         super().__init__(state_dir, settings)
-        self.team = team
+        self.team = team = team.lower()
         self.labels = {f"for:{team}", "for:everyone"}
         self._accounts: set[str] | None = None
 
@@ -555,7 +559,7 @@ class TeamWatcher(Watcher):
 
 
 def make_watcher(state_dir: Path, settings: Settings, side: str) -> Watcher:
-    if side == settings.home_team:
+    if side.lower() == settings.home_team:
         return Watcher(state_dir, settings)
     return TeamWatcher(state_dir, settings, side)
 
@@ -643,6 +647,17 @@ def main(argv: list[str] | None = None) -> int:
     if not re.fullmatch(r"[a-z0-9][a-z0-9-]{0,39}", side):
         print("[watcher-error] --side: a team name, lower case letters, digits and hyphens")
         return 2
+    try:
+        since_arg = parse(args.since) if args.since else None
+    except ValueError:
+        print(f"[watcher-error] --since: a UTC time like 2026-10-05T12:00:00Z (got {args.since!r})")
+        return 2
+    if settings.both:
+        print(
+            f"[watcher-error] crewline.yml: {', '.join(settings.both)} in both owner_accounts and"
+            " shared_accounts, treated as shared; owner_accounts holds only logins the agents"
+            " never post from"
+        )
     state_dir = Path(
         args.state_dir
         or Path.home() / ".crewline-watcher" / settings.repo.replace("/", "-").lower() / side
@@ -651,8 +666,12 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.once:
         now = datetime.now(UTC)
-        since = parse(args.since or watcher.state["last_check"] or iso(now - timedelta(hours=1)))
-        lines = watcher.once(now, since)
+        since = since_arg or parse(watcher.state["last_check"] or iso(now - timedelta(hours=1)))
+        try:
+            lines = watcher.once(now, since)
+        except Exception as caught:  # noqa: BLE001 (a line for the session, not a traceback)
+            print(f"[watcher-error] GitHub could not be read: {short(str(caught), 160)}")
+            return 1
         print("\n".join(lines) if lines else "nothing new")
         if not args.since:
             watcher.state["last_check"] = iso(now)

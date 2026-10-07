@@ -6,7 +6,7 @@ Claude accounts.
 A single agent can handle a task. Several agents on one codebase need what a human team needs: someone to say who
 does what, a way to stop two people doing the same work, a review gate sized by risk, and one place to talk across
 teams. crewline is that workflow, packaged as Claude Code skills. It came out of building
-[Mendloop](https://github.com/Mendloop-Co), a clinic platform built by a crew of up to seven agents plus outside teams.
+[Mendloop](https://github.com/Mendloop-Co), built by a crew of up to seven agents plus outside teams.
 
 ## The ideas
 
@@ -23,7 +23,7 @@ teams. crewline is that workflow, packaged as Claude Code skills. It came out of
 | **Workflow changes are announced.** A `for:everyone` notice, which every team acknowledges with "Applied". | A rule changes, and half the crew keeps working to the old one. |
 | **A relay is not approval, and posts are signed by form.** A decision is the owner's own words, copied exactly with where they said them. A post is signed on its first or last line, not by mention. | A coordinator's "the owner said yes" stands in for the owner. An unsigned comment from a shared account is taken for the owner's. |
 | **The owner runs one wizard, and owner tasks sweep everything.** Anything waiting on the owner is a `needs:owner` issue; a "don't forget" task lists every pending item with its steps. | The owner pastes a list of commands, and forgets what else was waiting. |
-| **A script for the mechanical, an agent for judgement.** Queue, PR checks, merge, release cut and signed posts are small scripts. | Hand-run steps that cost tokens every time and slip every time: a PR closed for good, a stale body write-back. |
+| **A script for the mechanical, an agent for judgement.** crewline ships the watcher script, and the contributing guide lists the small scripts worth writing for your repo: queue, PR checks, merge, release cut, signed posts. | Hand-run steps that cost tokens every time and slip every time: a PR closed for good, a stale body write-back. |
 | **Fresh session per task, model by risk.** The strongest model for high-risk work, a faster one for docs. | A long chat re-read on every call; an expensive model on a docs change. |
 | **Roll back first; a hotfix lane.** A release under an hour old that caused the problem is rolled back. A production fix skips a freeze with one strongest-model review. | Hours spent diagnosing while production stays broken, or a fix waiting behind a freeze. |
 | **Shared machine, no shared state.** No `git stash`, a test database per worktree, never another agent's server. | A stash pop that applies someone else's changes; two suites on one database. |

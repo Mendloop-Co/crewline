@@ -32,8 +32,7 @@ the repository keep the repository's own language.
    If it's already planned, built or decided, say where, and plan only the difference.
 3. **Ask only what the owner alone can answer.** Ask at most four questions at a time. Each question has a
    recommendation and plain-language trade-offs. Work out everything else yourself, and write each assumption down.
-   If your setup has an idea-shaping or scope-review skill (gstack's `/office-hours` and `/plan-ceo-review`, for
-   example), run it on a raw idea first.
+   Run your planning skills, if any (idea shaping, scope review), on a raw idea first.
 4. **Write the plan.**
    - **Product:** `{docs.specs}<date>-<topic>.md`, in the shape of the recent plans there.
    - **Business only:** in `{planner.side_plans}`, or in the chat if that isn't set. It's the owner's to act on,

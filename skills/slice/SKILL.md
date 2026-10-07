@@ -16,7 +16,8 @@ win.
    - **An outside team:** only a task agreed in a `for:<team>` issue.
 
    Run the reading routine of the `collab` skill first. An open `for:everyone` notice may change how you work or
-   freeze an area.
+   freeze an area. If the crew keeps its queue as labelled issues, a one-call `queue <agent>` helper that prints your
+   next items, one line each, replaces listing them by hand.
 2. **Something new with no spec?** Write the plan first and get it approved, then build.
 3. **Check for an overlapping claim.** Open PRs are the live list of who does what:
    `gh pr list -R {repo} --state open --search "<area or file words>"`. If a draft already covers it, don't start:
@@ -38,7 +39,8 @@ win.
      `Claimed in #<PR>. — <signature>`.
 
    If your project has schema migrations and the slice adds one, put its number in the title, e.g.
-   `[migr <app>/<NNNN>]`, so clashes show up in the PR list. Never target `{production_branch}`.
+   `[migr <app>/<NNNN>]`, so clashes show up in the PR list. Never target `{production_branch}`, except for a
+   hotfix (below).
 
    **A stacked PR** (built on another open PR) uses `--base <parent's branch>` instead, and says "stacked on #N"
    in its body. The coordinator retargets it to `{work_branch}` before merging the parent; then you merge
@@ -49,6 +51,8 @@ win.
 - Work only in your own working copy. Never run anything inside another agent's.
 - Follow `{docs.rules}` in full.
 - Batch your fixes, run the affected tests, then push once. Don't push, fix, push.
+- **Sharing a machine or clone** ("Sharing one machine or clone" in `{docs.contributing}`): no `git stash`, a test
+  database name of your own per worktree, and never kill a server or free a port before you know who owns it.
 - Bring `{work_branch}` in with `git merge`. **Never rebase or force-push a branch that has been pushed:** others
   may have read, reviewed or built on it.
 
@@ -65,8 +69,10 @@ win.
    - areas touched (from `{docs.areas}`);
    - migrations, impact on other areas and shared contracts;
    - assumptions, tests, and DoD evidence;
-   - new owner decisions as lines for `{docs.decisions}`. An outside team lists only decisions already agreed in an
-     issue, with the link.
+   - new owner decisions as rows under `## Decisions`, with the owner's exact words and where they said them as the
+     source. Never edit `{docs.decisions}` in the PR: the coordinator appends the rows at merge. A decision that
+     reached you through another agent isn't the owner's word, so confirm it first. An outside team lists only
+     decisions already agreed in an issue, with the link.
 
    **Referring to another PR or issue:** write `Refs #N`. Never put `close`, `fix` or `resolve` (in any form)
    directly before `#N` in a commit message or the PR body unless you mean to close N. GitHub closes it as soon
@@ -83,4 +89,16 @@ win.
    - delete the branch, but first check no other PR uses it as its base. The coordinator retargets those children
      to `{work_branch}` first, because GitHub closes a PR whose base branch is deleted;
    - run the reading routine again;
-   - start the next slice.
+   - **start the next slice in a fresh session** if none of your PRs is still open. A long conversation is re-read
+     on every call, which is most of an agent's cost, and the rules and work state live on GitHub, so nothing is
+     lost. If your platform lets an agent end its own session, do that as your last action; the coordinator then
+     restarts you with your first message and sets your model for the next slice's risk. With a PR still open or a
+     fix round likely, take the next item in the same session.
+
+## A hotfix
+
+A production problem that can't wait for the release goes through the hotfix lane in `{docs.contributing}`, "Production
+problems". Branch from `{production_branch}`, claim it with a draft PR against it, and keep the fix as small as the
+problem. Get one review by `{merge_gate.reviewer_model}`; a human merges and deploys it. Then merge it back into
+`{work_branch}` the same day, and leave a note on the incident's issue: the cause, the fix, and the test or check
+added. If the release is under an hour old and the problem started with it, roll back first instead.

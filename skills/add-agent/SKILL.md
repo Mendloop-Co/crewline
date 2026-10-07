@@ -1,6 +1,6 @@
 ---
 name: add-agent
-description: Add another agent to the home crew working on one machine. It gives the agent its own number and name, its own working copy, local database and test ports so it never clashes with another agent, a lane on the board, a model, and a first message. Use it whenever the owner wants another agent, a lane is split, or an agent needs a clean re-setup. Use it even if you're only told "add an agent", "we need another builder" or "set up another agent". This is not for outside teams: they follow the "Start here" section of the contributing guide.
+description: Add another agent to the home crew working on one machine. It gives the agent its own number and name, its own working copy, local database and test ports so it never clashes with another agent, a lane on the board, a model, and a first message. Use it whenever the owner wants another agent, a lane is split, or an agent needs a clean re-setup. Use it even if you're only told "add an agent", "we need another builder" or "set up another agent". This is not for outside teams; they follow the "Start here" section of the contributing guide.
 ---
 
 # Adding an agent to the home crew

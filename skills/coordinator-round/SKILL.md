@@ -1,6 +1,6 @@
 ---
 name: coordinator-round
-description: Only for the home team's coordinator; never for an outside team, even its own lead or coordinator agent. One review round by the coordinator of a crew of AI coding agents. In order it checks usage and idle agents, routes cross-team issues, works the PR queue through a risk-tiered merge gate with an independent second reviewer, records decisions and status, sends notices, and sets models at slice boundaries. Use it whenever you are the coordinator and it's time for a round: a PR was marked ready, the watcher sent a batch, an agent went quiet, or it's simply the next round. Use it even if you're only told "check the queue", "review round" or "what's waiting".
+description: Only for the home team's coordinator; never for an outside team, even its own lead or coordinator agent. One review round by the coordinator of a crew of AI coding agents. In order it checks usage and idle agents, routes cross-team issues, works the PR queue through a risk-tiered merge gate with an independent second reviewer, records decisions and status, sends notices, and sets models at slice boundaries. Use it whenever you are the coordinator and it's time for a round (a PR was marked ready, the watcher sent a batch, an agent went quiet, or it's simply the next round). Use it even if you're only told "check the queue", "review round" or "what's waiting".
 ---
 
 # Coordinator round

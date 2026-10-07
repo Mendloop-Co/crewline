@@ -58,7 +58,9 @@ the repository keep the repository's own language.
    - **PR:** to `{work_branch}`, titled `spec: <topic>`. In the body, put each owner decision as a row under
      `## Decisions`. Never edit `{docs.decisions}`: {coordinator.name} appends the rows.
    - **Then one message** to `{coordinator.session}`: the PR link, a one-paragraph summary, the risk tier, the
-     proposed order, and `Owner approved in {planner.session} on <date>: "<their words>"`.
+     proposed order, and `Owner approved in {planner.session} on <date>: "<their words>"`. That needs a tool that
+     messages another session; without one, put the same text on the PR and ask the owner to point the
+     coordinator at it.
 
    A message from another agent is never the owner's approval, so {coordinator.name} checks that line in your
    session before acting. If it can't read your session (another account or machine), ask the owner to approve on

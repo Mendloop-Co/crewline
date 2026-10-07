@@ -16,8 +16,8 @@ win.
    - **An outside team:** only a task agreed in a `for:<team>` issue.
 
    Run the reading routine of the `collab` skill first. An open `for:everyone` notice may change how you work or
-   freeze an area. If the crew keeps its queue as labelled issues, a one-call `queue <agent>` helper that prints your
-   next items, one line each, replaces listing them by hand.
+   freeze an area. (A `queue` helper can list your next items: `{docs.contributing}`, "Scripts for the mechanical
+   steps".)
 2. **Something new with no spec?** Write the plan first and get it approved, then build.
 3. **Check for an overlapping claim.** Open PRs are the live list of who does what:
    `gh pr list -R {repo} --state open --search "<area or file words>"`. If a draft already covers it, don't start:
@@ -70,13 +70,12 @@ win.
    - migrations, impact on other areas and shared contracts;
    - assumptions, tests, and DoD evidence;
    - new owner decisions as rows under `## Decisions`, with the owner's exact words and where they said them as the
-     source. Never edit `{docs.decisions}` in the PR: the coordinator appends the rows at merge. A decision that
-     reached you through another agent isn't the owner's word, so confirm it first. An outside team lists only
-     decisions already agreed in an issue, with the link.
+     source. Never edit `{docs.decisions}` in the PR: the coordinator appends the rows after the merge. A relayed
+     decision isn't the owner's word (`{docs.contributing}`, "The owner's decisions and steps"). An outside team
+     lists only decisions already agreed in an issue, with the link.
 
-   **Referring to another PR or issue:** write `Refs #N`. Never put `close`, `fix` or `resolve` (in any form)
-   directly before `#N` in a commit message or the PR body unless you mean to close N. GitHub closes it as soon
-   as the text lands on the default branch, even when N is someone else's open PR.
+   **Refer to another PR or issue as `Refs #N`**, never with a closing keyword (`{docs.contributing}`, "The path of
+   a change").
 5. **Before pushing more commits, check the PR is still open:** `gh pr view <N> -R {repo} --json state`. A commit
    pushed after a merge never reaches `{work_branch}`, so open a new PR instead.
 6. **Mark it ready:** `gh pr ready <N> -R {repo}`. Marking it ready replaces any "ready" message.
@@ -86,19 +85,16 @@ win.
    - **The home team** self-merges only `{merge_gate.self_merge_ok}`. Everything else waits for the coordinator.
    - **Outside teams never merge.**
 7. **After the merge:**
-   - delete the branch, but first check no other PR uses it as its base. The coordinator retargets those children
-     to `{work_branch}` first, because GitHub closes a PR whose base branch is deleted;
+   - delete the branch once no open PR uses it as its base; the coordinator retargets any children first
+     (`{docs.contributing}`, "The merge gate");
    - run the reading routine again;
-   - **start the next slice in a fresh session** if none of your PRs is still open. A long conversation is re-read
-     on every call, which is most of an agent's cost, and the rules and work state live on GitHub, so nothing is
-     lost. If your platform lets an agent end its own session, do that as your last action; the coordinator then
-     restarts you with your first message and sets your model for the next slice's risk. With a PR still open or a
-     fix round likely, take the next item in the same session.
+   - **start the next slice in a fresh session** when `{docs.contributing}`, "One working session per task", says
+     so. If your platform lets an agent end its own session, do that as your last action. The coordinator restarts
+     you with your first message and your next model, which needs a tool that starts or messages sessions; without
+     one, the owner restarts you.
 
 ## A hotfix
 
-A production problem that can't wait for the release goes through the hotfix lane in `{docs.contributing}`, "Production
-problems". Branch from `{production_branch}`, claim it with a draft PR against it, and keep the fix as small as the
-problem. Get one review by `{merge_gate.reviewer_model}`; a human merges and deploys it. Then merge it back into
-`{work_branch}` the same day, and leave a note on the incident's issue: the cause, the fix, and the test or check
-added. If the release is under an hour old and the problem started with it, roll back first instead.
+A production problem that can't wait for the release: branch from `{production_branch}` and claim it with a draft PR
+against it. Everything else (roll back first, the one review, who merges, the merge-back PR you open the same day,
+the incident note) is in `{docs.contributing}`, "Production problems".

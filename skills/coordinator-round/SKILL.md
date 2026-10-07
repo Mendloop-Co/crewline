@@ -11,7 +11,9 @@ Read `.claude/crewline.yml` first; `{…}` below are its values. The rules live 
 **Isolation:** never run anything inside another agent's working copy. Read everything through `gh` or your own
 copy.
 
-**Messages to agents:** only for work, a real conflict or a decision. No status pings.
+**Messages to agents:** only for work, a real conflict or a decision. No status pings. Messaging or restarting
+another session needs a tool that does it (a session-messaging tool on the same account); without one, ask the
+owner to pass the message or restart the agent.
 
 ## 1. Safety first
 
@@ -43,18 +45,9 @@ copy.
 `gh pr list -R {repo} --state open --json number,title,isDraft,author,headRefName,baseRefName`. Take each PR that is
 ready (not a draft).
 
-**Three small scripts turn this into a few cheap calls** (the principle is in `{docs.contributing}`, "Scripts for the
-mechanical steps"; each is a small bash or Python script on top of `gh`):
-- **`pr-brief <N>`** reads the PR once and prints one line per fact: head SHA, base, mergeable, closing keywords in
-  the body and commits, child PRs, the files by area, migrations, tier, and whether the author is an outside team.
-  It's also the right input for a second reviewer's prompt.
-- **`pr-check <N>`** is the mechanical part of the gate, one `ok` or `FAIL <why>` per line, exit 1 on any FAIL:
-  open, not a draft, base is the work branch, mergeable, a filled DoD section, `## Decisions` rows of the right
-  shape, no edit to the decisions log. It states the tier but never decides it.
-- **`merge <N> [<reviewed sha>]`** runs `pr-check`, reads the PR again (refuses if the head moved), retargets child
-  PRs, then merges with `--match-head-commit`. A `--dry-run` prints the writes instead of making them.
-
-The judgement stays yours: you still read the diff, and high-risk diffs still get the second reviewer.
+Helpers such as `pr-brief`, `pr-check` and `merge` make this a few cheap calls (`{docs.contributing}`, "Scripts for
+the mechanical steps"). The judgement stays yours: you still read the diff, and high-risk diffs still get the second
+reviewer.
 
 1. **Areas:** map the changed paths with `{docs.areas}`. A path with no area means the PR adds its line.
 2. **Tier:**
@@ -74,9 +67,8 @@ The judgement stays yours: you still read the diff, and high-risk diffs still ge
    fix it. Say what is right too, so the team learns the codebase's patterns.
 5. **Checks on every PR:**
    - the body follows the template: areas, migrations, impact, assumptions, tests, DoD, decisions;
-   - **no accidental closing keyword:** `close`, `fix` or `resolve` (in any form) directly before `#N`, in the body
-     or a commit message, closes N when it lands on the default branch. If that isn't meant, the author changes it
-     to `Refs #N` first. Check with:
+   - **no accidental closing keyword** (`{docs.contributing}`, "The path of a change"); if one isn't meant, the
+     author changes it to `Refs #N` first. Check with:
      `gh pr view <N> -R {repo} --json body,commits --jq '.body, .commits[].messageHeadline, .commits[].messageBody' | grep -inE '(clos(e|es|ed)|fix(es|ed)?|resolv(e|es|ed)) +#[0-9]+'`;
    - it updates the doc that owns any behaviour it changed, and a rule change updates its matching skill;
    - **migrations:** one order across all open PRs, set by you when claims overlap. Whichever merges out of order
@@ -88,11 +80,9 @@ The judgement stays yours: you still read the diff, and high-risk diffs still ge
      author.**
 6. **Spot-check** the author's last self-merged PR (`gh pr view <N> --json files`) for a miscategorised high-risk
    change.
-7. **Merge:** first list the PRs that use this branch as their base, from GitHub as part of the merge itself, not
-   from memory of who stacked on what
-   (`gh pr list -R {repo} --base <branch> --state open`), and retarget each to `{work_branch}`
-   (`gh pr edit <N> -R {repo} --base {work_branch}`). GitHub closes a PR whose base branch is deleted, for good: it
-   can't be reopened or retargeted, only replaced by a new PR from the same branch with its body copied over. Then:
+7. **Merge:** first retarget its children (`{docs.contributing}`, "The merge gate"):
+   `gh pr list -R {repo} --base <branch> --state open`, then `gh pr edit <N> -R {repo} --base {work_branch}` for
+   each. Then:
 
    ```bash
    gh pr merge <N> -R {repo} --merge --delete-branch --match-head-commit <reviewed sha>
@@ -106,10 +96,12 @@ The judgement stays yours: you still read the diff, and high-risk diffs still ge
 
 ## 4. After merging
 
-1. **Decisions:** append the `## Decisions` rows from the merged PRs to `{docs.decisions}` in one commit. The log is
-   append-only, and PRs never edit it. Each row keeps the owner's exact words and where they said them as its
-   source. A `decisions` helper that prints the rows of PRs merged since its last run (a draft block; it never
-   commits) saves collecting them by hand. Check a relayed decision's source before you record it (section 5).
+Steps 1, 2 and 4 go in **one small docs PR per round** (`docs/round-<date>`), which you self-merge as docs. Never
+commit straight to `{work_branch}`, your own changes included.
+
+1. **Decisions:** append the `## Decisions` rows from the merged PRs to `{docs.decisions}`. The log is append-only,
+   and other PRs never edit it. Each row keeps the owner's exact words and where they said them as its source.
+   Check a relayed decision's source before you record it (section 5).
 2. **Status:** update the overview when an area's line changed. Each slice writes its own file in
    `{docs.status_dir}`.
 3. **Notices:** a merged workflow change, a freeze starting or ending, or a priority change affecting outside teams
@@ -123,9 +115,8 @@ The judgement stays yours: you still read the diff, and high-risk diffs still ge
 - **Yours:** rules and process, merge order, the merge gate, and any calls the owner has delegated to you. Record
   each in `{docs.decisions}` with its reason.
 - **The owner's:** product scope, priorities, anything that costs money or needs an outside console, and anything
-  only the owner knows. Ask them directly. **A relay is not approval:** a decision passed on by another agent, or
-  by you, is not the owner's word. Confirm it in the owner's own chat before acting, and where two answers differ,
-  the later one governs.
+  only the owner knows. Ask them directly. **A relay is not approval** (`{docs.contributing}`, "The owner's
+  decisions and steps"): confirm a passed-on decision in the owner's own chat before acting.
 - **Every question or step waiting on the owner is a `needs:owner` issue** (`collab`, section 6). Keep that list
   complete, answer-ready and current. A post on one that isn't signed by form may be the owner or an agent that
   forgot to sign; confirm it with the owner in chat before acting on it when it changes money, personal data,
@@ -140,19 +131,17 @@ same rule.
 
 ## 7. Weekly
 
-- **The direct-push check**, from a full (not shallow) clone. Any line it prints is a commit that skipped a PR:
+- **The direct-push check**, from a full (not shallow) clone. Your round PRs show as merges like any other, so any
+  line it prints is a commit that skipped a PR, yours included:
   `git log --first-parent --since=8.days --format="%h %an %s" origin/{work_branch} | grep -v "Merge pull request"`.
 - **A retrospective**, including docs that no longer match the code or the decisions.
 - **Before a production launch or a new outside team,** re-read the environment checklist with the owner.
 
 ## 8. A production problem
 
-1. **Roll back first, investigate second.** If the release is under an hour old and the problem started with it,
-   roll back to the previous release. Otherwise fix forward. (`{docs.contributing}`, "Production problems".)
-2. **A hotfix skips a freeze, not the review.** One review by `{merge_gate.reviewer_model}`, then a human merges and
-   deploys it. Check that it is merged back into `{work_branch}` the same day.
-3. **After the incident,** its issue gets one note: the cause, the fix, and the test or check added. Chase it if it
-   is missing. A repeat gets a check that would have caught it.
-4. **Cutting a release by hand is slow and slips.** A `release-cut` helper does it in one call: it refuses unless the
-   environment runs the commit, creates the release branch, and drafts the PR body with the PRs since the last
-   release and every migration flagged that drops or renames. The human still merges.
+The rules are in `{docs.contributing}`, "Production problems". Your part:
+
+1. **Roll back first** when that section says so; otherwise fix forward through the hotfix lane.
+2. **Check the hotfix** gets its one `{merge_gate.reviewer_model}` review, and that its author opens the merge-back
+   PR to `{work_branch}` the same day.
+3. **Chase the incident note** on its issue if it is missing.

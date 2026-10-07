@@ -169,15 +169,26 @@ class Signing(unittest.TestCase):
         def ok(body):
             return watcher.signed(body, self.names, "acme")
 
-        self.assertTrue(ok("Agent 4: done"))
+        self.assertTrue(ok("Agent 2: done"))
+        self.assertTrue(ok("**Agent 2:** done"))
+        self.assertTrue(ok("**Lead**: merged"))
         self.assertTrue(ok("Applied — Agent 1, acme"))
         self.assertTrue(ok("Lead: merged"))
-        self.assertTrue(ok("Review\n\nbody\n\n— Agent 4 (coordinator), acme"))
+        self.assertTrue(ok("Review\n\nbody\n\n— Agent 2 (coordinator), acme"))
         self.assertTrue(ok("text\n\n— Planner, acme"))  # the team's own sign-off
-        self.assertFalse(ok("watcher test: should reach Agent 4 as unsigned"))
-        self.assertFalse(ok("Re-review by Agent 4 with the second pass"))
+        self.assertTrue(ok("Seen by the acme watcher; routed to Lead. — watcher, acme"))
+        self.assertFalse(ok("watcher test: should reach Agent 2 as unsigned"))
+        self.assertFalse(ok("Re-review by Agent 2 with the second pass"))
+        self.assertFalse(ok("Lead is unavailable today"))  # a name, but no colon
+        self.assertFalse(ok("Agent 2 done"))
         self.assertFalse(ok("Leader of the pack"))  # a name must end where it ends
         self.assertFalse(ok(""))
+
+    def test_an_acknowledgement_is_a_watchers_form(self):
+        self.assertTrue(watcher.acknowledgement("Seen — watcher, beta"))
+        self.assertTrue(watcher.acknowledgement("Seen by the acme watcher; routed to Lead."))
+        self.assertFalse(watcher.acknowledgement("Seen it, paying now"))
+        self.assertFalse(watcher.acknowledgement(None))
 
     def test_a_team_signature_is_a_form_not_a_mention(self):
         self.assertTrue(watcher.team_signed("Applied — Builder, beta (now runs…)", "beta"))
@@ -186,8 +197,8 @@ class Signing(unittest.TestCase):
         self.assertTrue(watcher.team_signed("fixed it — Builder, beta", "beta"))
         self.assertFalse(
             watcher.team_signed(
-                "Agent 4: your watcher only needs its usual `Seen — watcher, beta`.\n\n"
-                "— Agent 4 (coordinator), acme",
+                "Agent 2: your watcher only needs its usual `Seen — watcher, beta`.\n\n"
+                "— Agent 2 (coordinator), acme",
                 "beta",
             )
         )
@@ -219,7 +230,7 @@ class HomeSide(Base):
         fake = Fake(
             **{
                 "issues/comments?since": [
-                    comment(1, 5, BOT, "Agent 4: done"),
+                    comment(1, 5, BOT, "Agent 3: done"),
                     comment(2, 5, BOT, "Applied — Agent 1, acme"),
                     comment(3, 5, BOT, "forgot to sign"),
                     comment(4, 6, BOT, "no sign on an owner issue"),
@@ -248,6 +259,22 @@ class HomeSide(Base):
                 "[comment] #5",
             ],
         )
+
+    def test_the_watchers_own_comments_come_back_to_nobody(self):
+        routed = "Seen by the acme watcher; routed to Lead. Keep working on another slice meanwhile."
+        fake = Fake(
+            **{
+                "issues/comments?since": [
+                    comment(1, 5, BOT, f"{routed}\n\n— watcher, acme"),  # signed by form
+                    comment(2, 6, BOT, f"{routed} — watcher, acme"),
+                    comment(3, 6, BOT, routed),  # the old, unsigned form
+                    comment(4, 6, BOT, "Seen it, paying now"),  # not a watcher's form
+                    comment(5, 5, BOT, "Lead is unavailable today"),
+                ],
+                "by_number": {5: issue(5), 6: issue(6, labels=["owner:do"])},
+            }
+        )
+        self.assertEqual(tags(self.run_once(fake)), ["[owner] #6", "[unsigned] #5"])
 
     def test_a_ready_pr_with_new_commits_is_a_review_request(self):
         def pulls(*prs):
@@ -393,10 +420,11 @@ class TeamSide(Base):
             **{
                 "search/issues": NOTICE,
                 "issues/comments?since": [
-                    comment(1, 30, BOT, "Agent 4: reviewed"),
+                    comment(1, 30, BOT, "Agent 3: reviewed"),
                     comment(2, 30, "beta-bot", "thanks"),
                     comment(3, 30, "someone", "fixed it — Builder, beta"),
-                    comment(4, 31, BOT, "Agent 4: elsewhere"),
+                    comment(4, 31, BOT, "Agent 3: elsewhere"),
+                    comment(5, 30, BOT, "Seen by the acme watcher; routed to Lead. — watcher, acme"),
                 ],
                 "by_number": {30: issue(30, "beta-bot"), 31: issue(31)},
             }

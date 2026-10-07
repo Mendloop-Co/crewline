@@ -189,9 +189,9 @@ def gh(path: str):
 
 
 # --- Signatures --------------------------------------------------------------------------------
-# A post is signed by its form, not by a mention: the first line starts with the agent's name
-# ("Agent 4: ...", "Applied — Agent 1"), or the last line is a sign-off ("— Agent 4, <team>").
-# A first line that only mentions an agent ("Re-review by Agent 4") is not signed.
+# A post is signed by its form, not by a mention: the first line starts "<name>:" (bold allowed,
+# "**Agent 2:**") or "Applied — <name>", or the last line is a sign-off ("— Agent 2, <team>").
+# A first line that only mentions an agent ("Re-review by Agent 2", "Lead is away") is not signed.
 
 DASH = "[—–-]"
 
@@ -222,14 +222,18 @@ def signed(body: str | None, names: list[str], team: str) -> bool:
     if not lines:
         return False
     who = _names(names)
-    first = re.compile(rf"^(?:(?:Applied|Seen)\s+{DASH}\s+)?(?:{who})(?!\w)")
+    first = re.compile(rf"^(?:\*\*)?(?:{who})(?:\*\*)?:|^Applied\s+{DASH}\s+(?:{who})(?!\w)")
     last = re.compile(rf"^{DASH}+\s*(?:{who})(?!\w)")
     return bool(first.match(lines[0]) or last.match(lines[-1])) or team_signed(body, team)
 
 
+ACK = re.compile(rf"^Seen\s+(?:{DASH}\s+watcher\b|by the \S+ watcher\b)", re.IGNORECASE)
+
+
 def acknowledgement(body: str | None) -> bool:
-    """A watcher saying it saw a post ("Seen — watcher, <team>"): nothing to route."""
-    return (body or "").lstrip().startswith("Seen")
+    """A watcher saying it saw a post ("Seen — watcher, <team>", or the home watcher's "Seen by
+    the <team> watcher; routed to ..."): nothing to route."""
+    return bool(ACK.match((body or "").lstrip()))
 
 
 def confirmation(body: str | None) -> bool:
@@ -301,7 +305,7 @@ class Watcher:
             self._issues[number] = self.api(f"issues/{number}")
         return self._issues[number]
 
-    def seen(self, number: int, prefix: str = "Seen") -> bool:
+    def seen(self, number: int, prefix: str = "Seen — watcher") -> bool:
         comments = self.api(f"issues/{number}/comments?per_page=100")
         return any((c.get("body") or "").lstrip().startswith(prefix) for c in comments)
 
@@ -434,8 +438,8 @@ class Watcher:
             elif author in self.s.owners:
                 kind = "owner"
             elif author in self.s.shared:
-                if signed(body, self.s.agent_names, self.s.home_team):
-                    continue
+                if signed(body, self.s.agent_names, self.s.home_team) or acknowledgement(body):
+                    continue  # an agent's signed post, or this watcher's own "Seen by ..."
                 kind = "owner" if labels & self.s.owner_labels else "unsigned"
             elif acknowledgement(body):
                 continue

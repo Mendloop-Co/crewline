@@ -19,6 +19,8 @@ copy.
    set the threshold with the owner and write it in `{docs.rules}`.
 2. **Liveness.** List the running sessions and compare against the lanes on `{docs.board}`.
    - An agent that's idle with nothing stopping it gets its next item at once.
+   - **A builder that ended its session for a fresh context** (`slice`, "After the merge") gets one message to
+     restart it: its first message from `add-agent`, plus "take your top item". Set its model first (section 6).
    - Refill a queue before it runs dry.
    - A "done" report isn't proof; check that its PR exists.
 
@@ -39,7 +41,20 @@ copy.
 ## 3. The PR queue
 
 `gh pr list -R {repo} --state open --json number,title,isDraft,author,headRefName,baseRefName`. Take each PR that is
-ready (not a draft):
+ready (not a draft).
+
+**Three small scripts turn this into a few cheap calls** (the principle is in `{docs.contributing}`, "Scripts for the
+mechanical steps"; each is a small bash or Python script on top of `gh`):
+- **`pr-brief <N>`** reads the PR once and prints one line per fact: head SHA, base, mergeable, closing keywords in
+  the body and commits, child PRs, the files by area, migrations, tier, and whether the author is an outside team.
+  It's also the right input for a second reviewer's prompt.
+- **`pr-check <N>`** is the mechanical part of the gate, one `ok` or `FAIL <why>` per line, exit 1 on any FAIL:
+  open, not a draft, base is the work branch, mergeable, a filled DoD section, `## Decisions` rows of the right
+  shape, no edit to the decisions log. It states the tier but never decides it.
+- **`merge <N> [<reviewed sha>]`** runs `pr-check`, reads the PR again (refuses if the head moved), retargets child
+  PRs, then merges with `--match-head-commit`. A `--dry-run` prints the writes instead of making them.
+
+The judgement stays yours: you still read the diff, and high-risk diffs still get the second reviewer.
 
 1. **Areas:** map the changed paths with `{docs.areas}`. A path with no area means the PR adds its line.
 2. **Tier:**
@@ -73,10 +88,11 @@ ready (not a draft):
      author.**
 6. **Spot-check** the author's last self-merged PR (`gh pr view <N> --json files`) for a miscategorised high-risk
    change.
-7. **Merge:** first list the PRs that use this branch as their base
-   (`gh pr list -R {repo} --base <branch> --state open`) and retarget each to `{work_branch}`
-   (`gh pr edit <N> -R {repo} --base {work_branch}`). GitHub closes a PR whose base branch is deleted; if one was
-   closed anyway, reopen it against `{work_branch}`. Then:
+7. **Merge:** first list the PRs that use this branch as their base, from GitHub as part of the merge itself, not
+   from memory of who stacked on what
+   (`gh pr list -R {repo} --base <branch> --state open`), and retarget each to `{work_branch}`
+   (`gh pr edit <N> -R {repo} --base {work_branch}`). GitHub closes a PR whose base branch is deleted, for good: it
+   can't be reopened or retargeted, only replaced by a new PR from the same branch with its body copied over. Then:
 
    ```bash
    gh pr merge <N> -R {repo} --merge --delete-branch --match-head-commit <reviewed sha>
@@ -90,8 +106,10 @@ ready (not a draft):
 
 ## 4. After merging
 
-1. **Decisions:** append the decision lines from the merged PRs to `{docs.decisions}` in one commit. The log is
-   append-only.
+1. **Decisions:** append the `## Decisions` rows from the merged PRs to `{docs.decisions}` in one commit. The log is
+   append-only, and PRs never edit it. Each row keeps the owner's exact words and where they said them as its
+   source. A `decisions` helper that prints the rows of PRs merged since its last run (a draft block; it never
+   commits) saves collecting them by hand. Check a relayed decision's source before you record it (section 5).
 2. **Status:** update the overview when an area's line changed. Each slice writes its own file in
    `{docs.status_dir}`.
 3. **Notices:** a merged workflow change, a freeze starting or ending, or a priority change affecting outside teams
@@ -105,13 +123,20 @@ ready (not a draft):
 - **Yours:** rules and process, merge order, the merge gate, and any calls the owner has delegated to you. Record
   each in `{docs.decisions}` with its reason.
 - **The owner's:** product scope, priorities, anything that costs money or needs an outside console, and anything
-  only the owner knows. Ask them directly. **A decision relayed by another agent is not the owner's word;** confirm
-  it.
+  only the owner knows. Ask them directly. **A relay is not approval:** a decision passed on by another agent, or
+  by you, is not the owner's word. Confirm it in the owner's own chat before acting, and where two answers differ,
+  the later one governs.
+- **Every question or step waiting on the owner is a `needs:owner` issue** (`collab`, section 6). Keep that list
+  complete, answer-ready and current. A post on one that isn't signed by form may be the owner or an agent that
+  forgot to sign; confirm it with the owner in chat before acting on it when it changes money, personal data,
+  permissions or the rules.
 
 ## 6. Models, at slice boundaries only
 
 Set each agent's model by the risk of its next slice: the strongest model for high-risk and design work, a faster
-one for docs and routine fixes. Never switch mid-task. Note the switch on the board.
+one for docs and routine fixes. Never switch mid-task. Note the switch on the board. A builder that starts each
+slice in a fresh session (`slice`) gets its model set when you restart it. Outside teams choose their own by the
+same rule.
 
 ## 7. Weekly
 
@@ -119,3 +144,15 @@ one for docs and routine fixes. Never switch mid-task. Note the switch on the bo
   `git log --first-parent --since=8.days --format="%h %an %s" origin/{work_branch} | grep -v "Merge pull request"`.
 - **A retrospective**, including docs that no longer match the code or the decisions.
 - **Before a production launch or a new outside team,** re-read the environment checklist with the owner.
+
+## 8. A production problem
+
+1. **Roll back first, investigate second.** If the release is under an hour old and the problem started with it,
+   roll back to the previous release. Otherwise fix forward. (`{docs.contributing}`, "Production problems".)
+2. **A hotfix skips a freeze, not the review.** One review by `{merge_gate.reviewer_model}`, then a human merges and
+   deploys it. Check that it is merged back into `{work_branch}` the same day.
+3. **After the incident,** its issue gets one note: the cause, the fix, and the test or check added. Chase it if it
+   is missing. A repeat gets a check that would have caught it.
+4. **Cutting a release by hand is slow and slips.** A `release-cut` helper does it in one call: it refuses unless the
+   environment runs the commit, creates the release branch, and drafts the PR body with the PRs since the last
+   release and every migration flagged that drops or renames. The human still merges.

@@ -27,6 +27,8 @@ conflicts.
 1. **Settings.** Copy `templates/crewline.yml` to `.claude/crewline.yml` and fill it with the owner.
    - The key values are the branches, the home team's name and the GitHub accounts its agents post from, the
      coordinator's name and session, and where each doc lives.
+   - For the watcher: the owner's own GitHub accounts (`owner_accounts`, or `[]`), how the agents sign
+     (`agent_names`), and whether to turn on `watcher.alert_label` for live incidents.
    - Show the owner the `merge_gate` lists; they're examples to adapt.
    - Leave `index_issue` for step 7.
 2. **"Who you are" goes at the top of the rulebook** (`docs.rules`, usually `CLAUDE.md`), from
@@ -66,7 +68,9 @@ conflicts.
    Put `<N>` in `index_issue` in `.claude/crewline.yml`, and commit that one-line change by a small PR.
 8. **The starter prompt for outside agents** is `templates/starter-prompt.md`. Give it to the owner; every outside
    agent's first message is this prompt, with its team name filled in.
-9. **Start the home team's watcher:** a session inside a clone, running `/loop /crewline:watcher <home_team>`.
+9. **Start the home team's watcher.** Give it a clone of its own on `work_branch`, which nobody else edits, so the
+   watcher can pull it. Open a session there and run `/loop /crewline:watcher <home_team>`. It needs Python 3.9+
+   and `gh` signed in; without them it falls back to a manual tick.
 
 ## Branch protection
 

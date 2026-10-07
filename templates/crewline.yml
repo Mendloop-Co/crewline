@@ -5,7 +5,7 @@ repo: <owner>/<name>                 # the GitHub repository
 work_branch: develop                 # every slice branches from and targets this branch
 production_branch: main              # changes only through a PR a human merges; agents never merge it
 owner: <name>                        # the human who makes product and scope decisions
-owner_accounts: [<github-login>]     # the owner's own GitHub accounts; the watcher routes their posts first
+owner_accounts: [<github-login>]     # the owner's own GitHub accounts, or []; the watcher routes their posts first
 
 home_team: <team>                    # your own crew's label: for:<team>
 shared_accounts: [<github-login>]    # GitHub accounts your own agents post from; watchers ignore them

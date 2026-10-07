@@ -16,7 +16,7 @@ ever kills a server on a port it doesn't own: it finds the owner first.
 
 | Value | Rule | Example (agent 3) |
 |---|---|---|
-| Number `N` | the next unused number in the board's lanes | `8` |
+| Number `N` | the next unused number in the board's lanes | `3` |
 | Name | how your crew names chats, including the number | `Agent 3 BUILD` |
 | Working copy | a new folder in `{agents.root}`, never another agent's | `repo-3` |
 | Local database | its own instance and port, e.g. `{agents.db_port_pattern}` | `54333` |
@@ -36,8 +36,8 @@ use and test those same scripts. Until you have one, the owner runs the commands
 into the wizard afterwards. What the wizard does:
 
 ```bash
-git clone https://github.com/{repo}.git <agents.root>/<folder>
-cd <agents.root>/<folder> && git switch {work_branch}
+git clone https://github.com/{repo}.git {agents.root}/<folder>
+cd {agents.root}/<folder> && git switch {work_branch}
 ```
 
 Set this copy's git identity if it isn't set globally. Install dependencies as the README says. Start the local
@@ -55,7 +55,7 @@ Open it in the new working copy, named as in step 1. Choose the model by the ris
 message:
 
 ```text
-You are Agent <N> (<ROLE>) on {repo}, working only in <agents.root>/<folder> on branch {work_branch}. Your local database runs on port <db port>; your test ports are <api>/<web>. Never run anything in another agent's folder, never use git stash, and never kill a server you don't own. Read {docs.rules}, {docs.contributing} and {docs.definition_of_done}, then your lane and queue on {docs.board}. Start your first item with the slice skill, and run the collab reading routine at every session start.
+You are Agent <N> (<ROLE>) on {repo}, working only in {agents.root}/<folder> on branch {work_branch}. Your local database runs on port <db port>; your test ports are <api>/<web>. Never run anything in another agent's folder, never use git stash, and never kill a server you don't own. Read {docs.rules}, {docs.contributing} and {docs.definition_of_done}, then your lane and queue on {docs.board}. Start your first item with the slice skill, and run the collab reading routine at every session start.
 ```
 
 Each new slice starts in a fresh session, so the coordinator sends this message again, with the next item.
@@ -66,7 +66,7 @@ A planner (the planner skill) or a watcher runs no app and no tests. It needs no
 owner only opens the chat, and the agent makes its own working copy:
 
 ```text
-You are Agent <N> (<ROLE>) on {repo}. Your working copy is <agents.root>/<folder> on branch {work_branch}; if it doesn't exist, clone https://github.com/{repo}.git there and switch to {work_branch}. Never run anything in another agent's folder. Read {docs.rules}, {docs.contributing}, your lane on {docs.board} and the <role> skill, then <wait for my first idea | start>.
+You are Agent <N> (<ROLE>) on {repo}. Your working copy is {agents.root}/<folder> on branch {work_branch}; if it doesn't exist, clone https://github.com/{repo}.git there and switch to {work_branch}. Never run anything in another agent's folder. Read {docs.rules}, {docs.contributing}, your lane on {docs.board} and the <role> skill, then <wait for my first idea | start>.
 ```
 
 Before each new task it switches to `{work_branch}` and pulls, so the skills and plans it reads are current.

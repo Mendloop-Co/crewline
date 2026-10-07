@@ -5,18 +5,7 @@ description: Set up the crewline team workflow in a repository so a crew of AI c
 
 # Setting up crewline in a repository
 
-Crewline rests on five ideas. Each one fixes a failure we saw in practice:
-
-1. **One rulebook in the repository.** Everything an agent must follow lives in the repo, not in one machine's
-   private settings, so every agent on any account gets the same standard. One topic has one home, and other files
-   link to it.
-2. **Claims are draft PRs.** The open PR list is the live list of who does what. There's nothing to keep in sync.
-3. **A risk-tiered merge gate.** Low-risk work self-merges with evidence. High-risk work goes through a coordinator
-   and an independent second reviewer.
-4. **Issues are the channel between teams.** Agents on different accounts can't message each other, so one issue per
-   topic, labelled for who must answer and signed by who wrote it.
-5. **Nobody blocks, and every team runs a watcher.** Agents state an assumption and keep building. Watchers notice
-   new posts, because agents only see a comment when they look.
+The ideas behind each step, and the failure each one fixes, are in the README's "The ideas" table.
 
 ## Steps
 
@@ -27,9 +16,12 @@ conflicts.
 1. **Settings.** Copy `templates/crewline.yml` to `.claude/crewline.yml` and fill it with the owner.
    - The key values are the branches, the home team's name and the GitHub accounts its agents post from, the
      coordinator's name and session, and where each doc lives.
-   - For the watcher: the owner's own GitHub accounts (`owner_accounts`, or `[]`), how the agents sign
-     (`agent_names`), and whether to turn on `watcher.alert_label` for live incidents.
+   - For the watcher: the owner's own GitHub accounts (`owner_accounts`, or `[]`). These are only logins the
+     agents never post from; a login the agents share goes in `shared_accounts` only.
+   - `agent_names`: how the agents sign, the coordinator's name included (e.g. `["Agent {N}", "Lead"]`).
+   - Whether to turn on `watcher.alert_label` for live incidents.
    - Show the owner the `merge_gate` lists; they're examples to adapt.
+   - Delete the `planner:` and `agents:` blocks if the crew has no planner or no agents side by side on one machine.
    - Leave `index_issue` for step 7.
 2. **"Who you are" goes at the top of the rulebook** (`docs.rules`, usually `CLAUDE.md`), from
    `templates/who-you-are.md`. This is the most important step. Without it, an agent from another team that reads
@@ -44,15 +36,15 @@ conflicts.
      `Date | Decision | Notes | Source`. Source holds the owner's exact words and where they said them. PRs never edit
      it: they carry their rows in the body and the coordinator appends them;
    - `docs.areas` gets one `path-prefix area` line per top-level folder;
-   - `docs.status_dir` gets a `README.md`, since git can't hold an empty folder.
+   - `docs.status_dir` and `docs.specs` each get a `README.md`, since git can't hold an empty folder.
 
    If a doc exists, merge the missing parts into it.
 4. **Templates:**
    - `templates/pull_request_template.md` goes to `.github/pull_request_template.md`;
    - `templates/issue-collaboration.md` goes to `.github/ISSUE_TEMPLATE/collaboration.md`;
    - `templates/issue-owner-task.md` goes to `.github/ISSUE_TEMPLATE/owner-task.md`.
-5. **Open one PR with all of it** and merge it into `work_branch`. The index issue points at these docs, so they
-   must exist first.
+5. **Open one PR with all of it**, `.claude/crewline.yml` included (the watcher's clone pulls it from there), and
+   merge it into `work_branch`. The index issue points at these docs, so they must exist first.
 6. **Labels.** Only with the owner's go-ahead, since they're visible in the repository:
 
    ```bash
@@ -62,6 +54,9 @@ conflicts.
    gh label create needs:owner -R <repo> --description "Waiting on the owner's own answer"
    gh label create owner:do -R <repo> --description "A step only the owner can do"
    ```
+
+   If `watcher.alert_label` is set, create that label too: `gh label create "<alert_label>" -R <repo>
+   --description "A live incident; the watcher routes it first"`.
 7. **The index issue.** Copy `templates/index-issue.md` to a scratch file outside the repository, and fill in
    `<home_team>` and today's date. Then:
 
@@ -70,7 +65,8 @@ conflicts.
    gh issue pin <N> -R <repo>
    ```
 
-   Put `<N>` in `index_issue` in `.claude/crewline.yml`, and commit that one-line change by a small PR.
+   `<N>` is the number at the end of the issue URL that `gh issue create` prints. Put it in `index_issue` in
+   `.claude/crewline.yml`, and commit that one-line change by a small PR.
 8. **The starter prompt for outside agents** is `templates/starter-prompt.md`. Give it to the owner; every outside
    agent's first message is this prompt, with its team name filled in.
 9. **Start the home team's watcher.** Give it a clone of its own on `work_branch`, which nobody else edits, so the

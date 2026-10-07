@@ -9,7 +9,8 @@ Read `.claude/crewline.yml` first; `{…}` below are its values. The owner runs 
 opens the chat. The coordinator prepares the values and updates the board.
 
 **Every value must be unique.** Agents that share a database or a port kill each other's servers and corrupt each
-other's test runs.
+other's test runs. That includes the test-database name, so derive it from the working copy's path. And no agent
+ever kills a server on a port it doesn't own: it finds the owner first.
 
 ## 1. Pick the values (the coordinator)
 
@@ -28,6 +29,11 @@ other's test runs.
 - **the board:** add any agent that's running but missing from it, in the same board PR as step 3.
 
 ## 2. The owner sets up the working copy (once)
+
+**The owner runs one wizard, never a list of commands to paste.** It's a short interactive script that asks for the
+values from step 1 and calls one-job scripts for each step below (clone, identity, database, port check); agents
+use and test those same scripts. Until you have one, the owner runs the commands below once, and an agent turns them
+into the wizard afterwards. What the wizard does:
 
 ```bash
 git clone https://github.com/{repo}.git <agents.root>/<folder>
@@ -49,8 +55,10 @@ Open it in the new working copy, named as in step 1. Choose the model by the ris
 message:
 
 ```text
-You are Agent <N> (<ROLE>) on {repo}, working only in <agents.root>/<folder> on branch {work_branch}. Your local database runs on port <db port>; your test ports are <api>/<web>. Never run anything in another agent's folder. Read {docs.rules}, {docs.contributing} and {docs.definition_of_done}, then your lane and queue on {docs.board}. Start your first item with the slice skill, and run the collab reading routine at every session start.
+You are Agent <N> (<ROLE>) on {repo}, working only in <agents.root>/<folder> on branch {work_branch}. Your local database runs on port <db port>; your test ports are <api>/<web>. Never run anything in another agent's folder, never use git stash, and never kill a server you don't own. Read {docs.rules}, {docs.contributing} and {docs.definition_of_done}, then your lane and queue on {docs.board}. Start your first item with the slice skill, and run the collab reading routine at every session start.
 ```
+
+Each new slice starts in a fresh session, so the coordinator sends this message again, with the next item.
 
 ## An agent that doesn't build
 

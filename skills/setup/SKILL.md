@@ -38,14 +38,17 @@ conflicts.
    - `templates/definition-of-done.md` becomes `docs.definition_of_done`, with a heading that matches the `#section`
      part of the setting;
    - `templates/board.md` becomes `docs.board`, with a real lane for every agent the home team has now;
-   - `docs.decisions` gets a title and a line saying it is append-only;
+   - `docs.decisions` gets a title, a line saying it is append-only, and the table header
+     `Date | Decision | Notes | Source`. Source holds the owner's exact words and where they said them. PRs never edit
+     it: they carry their rows in the body and the coordinator appends them;
    - `docs.areas` gets one `path-prefix area` line per top-level folder;
    - `docs.status_dir` gets a `README.md`, since git can't hold an empty folder.
 
    If a doc exists, merge the missing parts into it.
 4. **Templates:**
    - `templates/pull_request_template.md` goes to `.github/pull_request_template.md`;
-   - `templates/issue-collaboration.md` goes to `.github/ISSUE_TEMPLATE/collaboration.md`.
+   - `templates/issue-collaboration.md` goes to `.github/ISSUE_TEMPLATE/collaboration.md`;
+   - `templates/issue-owner-task.md` goes to `.github/ISSUE_TEMPLATE/owner-task.md`.
 5. **Open one PR with all of it** and merge it into `work_branch`. The index issue points at these docs, so they
    must exist first.
 6. **Labels.** Only with the owner's go-ahead, since they're visible in the repository:
@@ -54,6 +57,8 @@ conflicts.
    gh label create collaboration -R <repo>
    gh label create for:everyone -R <repo> --description "Notice for every team; comment Applied when done"
    gh label create "for:<home_team>" -R <repo> --description "The home team must answer"
+   gh label create needs:owner -R <repo> --description "Waiting on the owner's own answer"
+   gh label create owner:do -R <repo> --description "A step only the owner can do"
    ```
 7. **The index issue.** Copy `templates/index-issue.md` to a scratch file outside the repository, and fill in
    `<home_team>` and today's date. Then:

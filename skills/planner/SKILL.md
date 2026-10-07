@@ -72,6 +72,6 @@ the repository keep the repository's own language.
 - **Code**, or a change outside `{docs.specs}` and `{planner.side_plans}`.
 - **Assigning agents,** or editing `{docs.board}`, the lane queues, `{docs.decisions}` or the rulebook. Those
   belong to {coordinator.name}.
-- **Outside consoles** (cloud, hosting, billing, repository settings). Write the steps; the owner does them.
+- **Outside consoles** (cloud, hosting, billing, repository settings). Write the steps as an `owner:do` issue (`collab`, section 6); the owner does them.
 - **Writing to a live system,** real personal data, passwords, keys or tokens.
 - **`git stash`.** Each plan gets its own branch; commit work in progress instead.

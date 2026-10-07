@@ -1,7 +1,7 @@
 ---
 name: Owner task
 about: A decision or a step only the owner can make or do
-title: "[owner] "
+title: "[owner-task] "
 labels: needs:owner
 ---
 

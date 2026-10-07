@@ -35,9 +35,10 @@ gh issue list -R {repo} --state open --label collaboration --search '"<your sign
 ```
 
 - **An open `for:everyone` notice you haven't applied:** pull `{work_branch}`, re-read the section it names, and
-  apply it. Then comment `Applied — <signature>`. If your team's `for:<team>` label doesn't exist yet, the
-   coordinator hasn't processed your join notice. Read `for:everyone` and your own threads until it does. If your session started before the change, re-read before you
+  apply it. Then comment `Applied — <signature>`. If your session started before the change, re-read before you
   carry on.
+- **No `for:<team>` label for your team yet:** the coordinator hasn't processed your join notice. Read
+  `for:everyone` and your own threads until it does.
 - **An issue for your side that's yours:** answer it (section 3).
 - Never re-read closed issues. What they decided lives in the docs now.
 
@@ -53,7 +54,8 @@ gh issue list -R {repo} --state open --label collaboration --search '"<your sign
    ```
 
    The title tag is `[question]`, `[notice]` or `[blocking]`. `[blocking]` is only for a decision you truly can't
-   make yourself. (`[task]` is the coordinator's: one piece of work handed to a team.)
+   make yourself. (`[task]` is the coordinator's: one piece of work handed to a team. `[owner-task]` is for what
+   waits on the owner, section 6.)
 
    The body uses the same fields as `.github/ISSUE_TEMPLATE/collaboration.md`, in the same order:
    - the type;
@@ -120,10 +122,9 @@ how they learn.
 
 The rules are in `{docs.contributing}`, "The owner's decisions and steps". The order of steps:
 
-1. **Open one issue per question or step** from `.github/ISSUE_TEMPLATE/owner-task.md`, labelled `needs:owner`, plus
-   `owner:do` when it's a step for the owner's own hands. If the owner asked for a "don't forget" task, sweep the
-   whole conversation first: every pending decision, habit, parked item and running cost gets its place, each with
-   full steps and what to send back.
+1. **Open one issue per question or step** from `.github/ISSUE_TEMPLATE/owner-task.md`, titled `[owner-task] …`
+   and labelled `needs:owner`, plus `owner:do` when it's a step for the owner's own hands. If the owner asked for a
+   "don't forget" task, sweep the whole conversation first ("Sweep, don't sample" says what goes in).
 2. **The owner answers in chat.** Copy their words exactly onto the issue:
    `<your signature>: the owner, in <chat name>, <date>: "<their words>"`.
 3. **Then act,** add the decision row to your PR's `## Decisions`, and close the issue. A step on the owner's own

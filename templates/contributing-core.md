@@ -55,8 +55,8 @@ same branch with its body copied over.
   stands in for them: **a relay is not approval.** Confirm a relayed decision in the owner's own chat before acting
   on it. Record each decision as a row in the PR that uses it, with the owner's words copied exactly and where they
   said them (the chat's name, the date). If two answers differ, the later one governs.
-- **Whatever waits on the owner is an issue labelled `needs:owner`:** the question, the options with a
-  recommendation, and what waits on the answer. The owner answers in chat as usual. The agent they told then
+- **Whatever waits on the owner is an issue titled `[owner-task] …` and labelled `needs:owner`:** the question,
+  the options with a recommendation, and what waits on the answer. The owner answers in chat as usual. The agent they told then
   copies the exact words onto the issue as a comment, acts, records the decision row and closes it. Never close
   one without the owner's own words on it.
 - **A step only the owner can do** (a console, a command on their machine, a sign-in) is also labelled `owner:do`.

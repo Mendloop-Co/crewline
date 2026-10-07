@@ -5,9 +5,12 @@ repo: <owner>/<name>                 # the GitHub repository
 work_branch: develop                 # every slice branches from and targets this branch
 production_branch: main              # changes only through a PR a human merges; agents never merge it
 owner: <name>                        # the human who makes product and scope decisions
+owner_accounts: [<github-login>]     # the owner's own GitHub accounts, or []; the watcher routes their posts first
 
 home_team: <team>                    # your own crew's label: for:<team>
 shared_accounts: [<github-login>]    # GitHub accounts your own agents post from; watchers ignore them
+agent_names: [Agent {N}]             # how your own agents sign; {N} is any number. A post is signed when its
+                                     # first line starts with a name, or its last line is "— <name>, <team>"
 index_issue: <number>                # the pinned "start here" index issue (setup creates it)
 
 coordinator:
@@ -36,9 +39,13 @@ merge_gate:                          # examples; adapt both lists to your projec
   max_review_cycles: 2               # a third only after a P0/P1
 
 watcher:
-  active_seconds: 900                # after an outside post in the last hour
-  quiet_seconds: 3600
+  active_seconds: 900                # manual tick: after an outside post in the last hour
+  quiet_seconds: 3600                # manual tick: otherwise
   ack_hours: 2                       # a for:<team> issue without "Seen" after this = that team's watcher is down
+  poll_seconds: 60                   # the script: seconds between passes (30 at least)
+  update_minutes: 15                 # the script: pull a clean clone and re-read this file this often
+  owner_labels: [needs:owner, owner:do]  # an unsigned post from shared_accounts here is the owner's
+  # alert_label: alert               # optional: issues with this label are live incidents, routed first
 
 agents:                              # your own crew's agents on one machine (add-agent skill)
   root: <folder that holds each agent's working copy>

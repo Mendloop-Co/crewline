@@ -54,7 +54,7 @@ It shows you each file before writing it.
 | `crewline:setup` | the owner, once | puts the workflow into a repository |
 | `crewline:slice` | every agent | starts a slice (claim with a draft PR) and finishes it (definition of done by risk, then the merge gate) |
 | `crewline:collab` | every agent | the reading routine; asking, answering and closing; announcing a change or freeze; a team joining |
-| `crewline:watcher` | one per team | one tick, run as `/loop /crewline:watcher <team>`: notice, acknowledge, route, pace itself |
+| `crewline:watcher` | one per team | run as `/loop /crewline:watcher <team>`: a bundled script polls GitHub and wakes the session only when something arrived, to acknowledge and route it; a manual tick where the script can't run |
 | `crewline:coordinator-round` | the coordinator | one review round: usage and idle agents, cross-team issues, the PR queue by risk, decisions, notices |
 | `crewline:planner` | one planner agent, optional | the owner's business ideas become plans: what exists, the owner's questions, a spec PR to the coordinator once the owner says yes |
 | `crewline:add-agent` | the owner and coordinator | adds an agent to the home crew with its own working copy, database and ports |
@@ -65,6 +65,9 @@ Every skill reads your settings file, so the skills themselves contain no projec
 
 - **Agents don't wake up by themselves.** The watcher covers the gap, but an outside team's reply still waits until
   one of its sessions runs.
+- **The watcher script needs Python 3.9+ and `gh`** on the watcher's machine, and a clone of its own. Without them
+  the watcher falls back to a manual tick, which costs a model turn every time. Each pass reads one page (100) of
+  each list, so a bigger burst inside one minute can be missed.
 - **Rules hold by agreement** unless your GitHub plan lets you protect branches. The coordinator's weekly direct-push
   check is the safety net.
 - **The coordinator is a single point of failure.** Outside teams can keep working if it stops, but nothing merges.

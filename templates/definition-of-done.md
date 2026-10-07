@@ -16,4 +16,8 @@ touches anything in `merge_gate.high_risk`; otherwise the **light set** does.
 8. If there's a UI, check each touched screen on the devices your users have.
 9. A security review when auth, permissions or personal data are involved.
 
+**A hotfix** (a production fix that skips a release freeze): the tests for the fix pass, and one review by
+`merge_gate.reviewer_model`. It's merged back into the work branch the same day, and the incident's issue gets a
+note: the cause, the fix, and the test or check added.
+
 Replace these lines with your project's own tools and commands as they settle.

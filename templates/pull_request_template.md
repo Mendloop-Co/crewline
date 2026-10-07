@@ -38,4 +38,8 @@ Open it as a draft as soon as you start: the draft is your claim.
 
 ## Decisions
 
-<!-- New owner decisions as lines for the decisions log. "None" if none. -->
+<!--
+"None" if none. Otherwise one table row per new owner decision, with the columns Date | Decision | Notes | Source.
+Source holds the owner's exact words and where they said them (chat name, date). The coordinator appends the rows to
+the decisions log when it merges, so never edit the log in this PR.
+-->

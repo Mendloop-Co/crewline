@@ -115,6 +115,28 @@ same branch with its body copied over.
 - **Choose the model by the slice's risk:** the strongest for anything in `<merge_gate.high_risk>` and for design
   work, a faster one for docs and routine fixes. Never switch mid-task.
 
+## Spending tokens wisely
+
+Every tool call re-sends the whole conversation, so what sits in it is the main cost. These hold for every agent,
+inside or outside, with no extra instruction:
+- **Review by risk.** A full review (every specialist, a red team, an adversarial pass) for anything in
+  `<merge_gate.high_risk>`. For screens and reports, only the specialists the diff touches plus one adversarial pass.
+  For docs, CI and tooling, green tests and one reviewer if logic changes. At most two review rounds; a third only
+  when the second found a blocker.
+- **Cheap models for reading.** Search and read through a fast, read-only subagent and keep its conclusion, not the
+  file dumps; review specialists can run on a mid-size model. Writing code and the adversarial pass stay on the
+  session's model. Once a search is delegated, don't also run it yourself.
+- **Small output.** Command output fills most of a conversation (measured on one crewline project: about 70% of
+  everything tools returned was shell output, 16% file reads). Pipe tests to `tail` or grep for failures, run
+  `git diff --stat` before a full diff, read files by line range, prefer page text to screenshots and take
+  screenshots small.
+- **One run per skill per slice.** Check a fix with a targeted test, not a new review or QA run.
+- **Batch local fixes** and run the affected tests before pushing. No push-fix-push.
+- **Parallel work in one call.** Once a slice's contract (request and response shapes, error and permission codes) is
+  fixed, dispatch the independent parts as subagents together, then integrate and review the whole diff yourself.
+- **Coordinate through the PR queue and the issues,** not chat messages. Message the coordinator only for a real
+  conflict or a decision.
+
 ## Sharing one machine or clone
 
 - **No `git stash`.** A clone's worktrees share one stash, and a pop can apply another agent's changes. Commit work

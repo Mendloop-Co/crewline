@@ -22,7 +22,7 @@ win.
 3. **Check for an overlapping claim.** Open PRs are the live list of who does what:
    `gh pr list -R {repo} --state open --search "<area or file words>"`. If a draft already covers it, don't start:
    - with the team model, a Dev tells its manager;
-   - a home team's manager asks the coordinator;
+   - on the home team, ask the coordinator (the coordinator itself settles it with the claim's author);
    - an outside team's manager asks in a `for:{home_team}` issue.
 4. **Branch from the latest work branch:**
    `git fetch origin && git switch -c <type>/<slug> origin/{work_branch}`. The type is `feat`, `fix`, `docs` or
@@ -87,22 +87,22 @@ win.
    - **The home team** self-merges only `{merge_gate.self_merge_ok}`. Everything else waits for the coordinator.
    - **Outside teams never merge.**
 7. **After the merge:**
-   - delete the branch once no open PR uses it as its base; the coordinator retargets any children first
+   - **Check, then clean up your clone.** `git fetch origin`, then check that
+     `gh pr view <PR number> -R {repo} --json state,headRefOid` says `MERGED` and that its `headRefOid` equals
+     `git rev-parse <branch>`: the merge carried everything you have, for merge and squash merges alike. If it
+     doesn't, stop and report, and leave the branch and its worktree as they are. Only when it does: switch back to
+     `{work_branch}` and pull, remove the branch's worktree if it had one with `git worktree remove` (never `rm` on a
+     path held in a variable), and delete the local branch with `git branch -D <branch>` (plain `-d` refuses after a
+     squash merge);
+   - delete the remote branch once no open PR uses it as its base; the coordinator retargets any children first
      (`{docs.contributing}`, "The merge gate");
-   - **clean up your clone:** `git fetch origin` and switch back to `{work_branch}`. Then check that
-     `gh pr view <branch> -R {repo} --json state,headRefOid` says `MERGED` and that its `headRefOid` equals
-     `git rev-parse <branch>`: the merge carried everything you have, for merge and squash merges alike. Only then
-     remove its worktree, if it had one, with `git worktree remove` (never `rm` on a path held in a variable), and
-     then delete the local branch with `git branch -D <branch>` (plain `-d` refuses after a squash merge). If the check fails, stop and
-     report;
-   - **with the team model, a Dev** reports to its manager (the `report` skill) and waits; it doesn't pick its next
-     item itself;
-   - run the reading routine again (a Dev's manager does this for it);
-   - **a small crew's agent** takes its next item from `{docs.board}` itself (step 1 of "Start");
-   - **start the next slice with a fresh context** when `{docs.contributing}`, "One working session per task", says
-     so: save your state, then clear your chat or end your session where your platform lets you; otherwise tell the
-     coordinator (with the team model, your manager) `needs: clear` and wait. It restarts you with your first
-     message and next item (with the team model, "go read project" first).
+   - **report** (the `report` skill). With the team model, a Dev then waits for its manager: it doesn't pick its next
+     item or run the reading routine itself;
+   - everyone else runs the reading routine again and takes the next item (step 1 of "Start");
+   - **start the next slice with a fresh context** when `{docs.contributing}`, "One working session per task, and the
+     right model", says so: save your state, then clear your chat or end your session where your platform lets you;
+     otherwise put `needs: clear` in your report and wait. The coordinator (with the team model, your manager), or the
+     owner, restarts you with your first message and next item (with the team model, "go read project" first).
 
 ## A hotfix
 

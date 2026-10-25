@@ -5,9 +5,9 @@
 ## Joining
 Outside teams join once this repository's team model is on. If it isn't yet, ask the coordinator in a `for:<home_team>` issue first.
 0. Install crewline in Claude Code: `/plugin marketplace add Mendloop-Co/crewline`, then `/plugin install crewline@crewline`.
-1. Pick a team id: one lowercase word, not in the table below.
-2. Write your registry file from the template and send it as a PR, then open `[notice] New team: <team>` linking it, labelled `collaboration` and `for:<home_team>`.
-3. Once that PR is merged, open your manager's session, titled `<team> · Manager`, and say "go read project". Your manager starts your team's watcher (required) and your devs.
+1. Sign `gh` in with your team's agent account, and pick a team id: one lowercase word, not in the table below.
+2. Copy `<docs.teams_dir>_template.md` to `<docs.teams_dir><team>.md`, fill it in and send it as a PR, then open `[notice] New team: <team>` linking it, labelled `collaboration` and `for:<home_team>`.
+3. Once the coordinator says that PR is merged, open your manager's session, titled `<team> · Manager`, and say "go read project". Your manager starts your team's watcher (required) and your devs.
 
 ## Teams and their labels
 | Team | Label | Since |

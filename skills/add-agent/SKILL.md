@@ -61,8 +61,10 @@ as in step 1. Choose the model by the risk of its first slice.
 **A small crew:** the first message is
 
 ```text
-You are Agent <N> (<ROLE>) on {repo}, working only in {agents.root}/<folder> on branch {work_branch}. Your local database runs on port <db port>; your test ports are <api>/<web>. Never run anything in another agent's folder, never use git stash, and never kill a server you don't own. Read {docs.rules}, {docs.contributing} and {docs.definition_of_done}, then your lane and queue on {docs.board}. Start your first item with the slice skill, and run the collab reading routine at every session start.
+You are <name> on {repo}, working only in {agents.root}/<folder> on branch {work_branch}. Your local database runs on port <db port>; your test ports are <api>/<web>. Never run anything in another agent's folder, never use git stash, and never kill a server you don't own. Read {docs.rules}, {docs.contributing} and {docs.definition_of_done}, then your lane and queue on {docs.board}. Start your first item with the slice skill, and run the collab reading routine at every session start.
 ```
+
+`<name>` is the name from step 1. Leave out the database and port sentence for an agent that runs neither.
 
 **The coordinator's own first message** (a small crew):
 
@@ -92,5 +94,6 @@ Before each new task it switches to `{work_branch}` and pulls, so the skills and
 Merge or save its open work as PRs first. Then:
 - the coordinator removes its lane and queue (and, with the team model, its registry row);
 - the owner closes the chat;
-- the owner deletes its database instance and folder, only after `git status` and
-  `git log origin/{work_branch}..HEAD` are both empty.
+- the owner deletes its database instance and folder, only after these three are all empty in that folder:
+  `git status --porcelain`, `git log --branches --not --remotes --oneline` (commits on any branch that were never
+  pushed), and `git worktree list` beyond its first line. Otherwise the agent pushes or saves that work first.

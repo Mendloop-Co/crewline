@@ -47,15 +47,17 @@ Then, in your repository:
 /crewline:setup
 ```
 
-Setup walks you through the settings file (`.claude/crewline.yml`) and adds the pieces your repository lacks: the
-rulebook's "Who you are" section, the contributing guide, the definition of done, the board, PR and issue templates,
-labels, and a pinned index issue. It shows you each file before writing it.
+Setup asks you a few questions (your repository, the GitHub login your agents post from, the coordinator's name, how
+many builders) and keeps sensible defaults for the rest. It adds what your repository lacks: the rulebook's "Who you
+are" section, the contributing guide, the definition of done, the board, a PR template and two labels. It shows you
+each file before writing it, and it all lands in one PR.
 
 **Start small.** By default crewline sets up one small crew: a coordinator (an agent that reviews and merges), a
 few agents, and a board that says who works on what. That's all you need to start: claims as draft PRs, a merge gate
 sized by risk, one rulebook. When another team or Claude account joins, or the crew outgrows one coordinator, turn on
 the **team model** (`team_model: true`): a manager per team, titled sessions and a registry file per team. Setup's
-"Turning on the team model" does it in one PR.
+"Turning on the team model" does it in one PR, and only then adds the outside-team pieces: the collaboration rules,
+the team files, more labels and the pinned index issue.
 
 ## The skills
 
@@ -87,7 +89,7 @@ Every skill reads your settings file, so the skills themselves contain no projec
   saves its state and asks for a clear, and every merged slice counts as the 50% mark; the owner or a session tool
   does the clear. The rules live in the repo, so nothing is lost.
 - **Two lists of accounts until 0.4.** The watcher still reads `shared_accounts` and `agent_names` from
-  `crewline.yml`; the team registry's `Agent accounts` and "Signs as" must match them.
+  `crewline.yml`; the home team's registry `Agent accounts` and "Signs as" must match them (never add an outside team's accounts).
 
 ## Licence
 

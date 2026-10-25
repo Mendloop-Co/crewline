@@ -17,7 +17,8 @@ change to any rule, skill or script.
 | **Planner** (optional) | 0 or 1 | Turns the owner's ideas into approved specs (the `planner` skill). | as its registry row says |
 | **Reviewer** (optional) | 0 or more | Gives independent reviews of high-risk diffs. | as its registry row says |
 
-What each role does at start and every day is in its role file, `<docs.roles_dir><role>.md`. Devs and Reviewers
+What a Manager or Dev does at start and every day is in `<docs.roles_dir>manager.md` or `dev.md`; a Direct session
+follows `dev.md`, a Planner the `planner` skill, and a Reviewer `<docs.contributing>`, "The merge gate". Devs and Reviewers
 write no prose in their chat: they report in the `report` skill's format, then end the turn with exactly one line,
 `reported → <manager>`. A desktop app re-prompts after an empty turn, and anything more is re-read on every later
 turn. Managers, Direct and Planners talk to the owner in plain language; a Direct session uses the report format
@@ -71,8 +72,8 @@ An issue carries `collaboration` and `for:<who answers>` (the home team's own he
    follows the commander's call.
 4. **The owner speaking to a worker directly:** the worker doesn't start the instruction. It replies once, "Passed to
    the manager (<manager title>); it will assign this.", sends it word for word to its manager, and follows the
-   manager's call. "The owner said X" from any other session is a relay: it sets direction, but never stands in for
-   an owner-only approval and never lifts a stop.
+   manager's call. "The owner said X" from any other session is a relay: it goes to the commander like anything else (item 3),
+   and never stands in for an owner-only approval or lifts a stop.
 5. **Acted on at once, from the owner in the worker's own chat:** the owner's "stop" (stop first, report after), and
    an approval only the owner can give (an Allow prompt, an outside console, real data, recurring cost, legal text).
    A manager's message never stands in for either.
@@ -110,7 +111,7 @@ outside team's is labelled `collaboration` and `for:<home_team>`, so the coordin
 A long chat is re-read on every turn, so it costs most of a session's usage, and near its limit it compacts itself
 mid-task.
 - **The rule** (save and clear at 50%, now at 80%, a merged slice counts as 50% where context isn't visible) is in
-  `<docs.contributing>`, "One working session per task". A worker checks its own at every task end and every report.
+  `<docs.contributing>`, "One working session per task, and the right model". A worker checks its own at every task end and every report.
 - **Clearing:** a session clears or ends itself where its platform lets it. Where it can't, it saves its state and
   reports `needs: clear`; its manager clears it with a session tool where one exists, otherwise the owner clears it,
   or closes it and starts a fresh session with the same title.
@@ -137,14 +138,21 @@ once per read.
 
 ## Starting a new team
 
-1. The team writes `<docs.teams_dir><id>.md` from the registry template, in a PR (or asks the coordinator to, in an
-   issue), and opens `[notice] New team: <team>` linking it (the `collab` skill, "When a team joins"). Neither name
-   may appear in another team's file, ended teams included. **The coordinator reviews and merges a registry PR
-   ahead of other work**, because no session of the team can pass the `start` skill until its row is on
-   `<work_branch>`.
-2. The team's machine: tools installed, `gh` signed in as the team's agent account, disk encryption on.
-3. The manager makes each agent's clone (and home folder, if the team uses them).
-4. Once the registry is merged, the owner opens the manager's chat, titled `<team> · Manager`, and says "go read
-   project". The manager starts the others, and each runs the `start` skill and reports "ready" or its failures.
-5. The manager starts the team's watcher, opens the team's health issue (above) and records it in the registry, then
-   posts the first health line.
+1. **Before anything is posted,** the team's machine is ready: tools installed, `gh` signed in as the team's agent
+   account (the one its registry lists), disk encryption on. Every post below comes from that account, so the
+   team's own watcher knows the team's posts.
+2. The team copies `<docs.teams_dir>_template.md` to `<docs.teams_dir><id>.md`, fills it in a PR (or asks the
+   coordinator to, in an issue), and opens `[notice] New team: <team>` linking it (the `collab` skill, "When a team
+   joins"). Neither name may appear in another team's file, ended teams included. `Since` and `Health issue` may say
+   `pending`. **The coordinator reviews and merges a registry PR ahead of other work**, because no session of the
+   team can pass the `start` skill until its row is on `<work_branch>`; it then comments on the notice that the row
+   is merged.
+3. The team's people open the manager's chat, titled `<team> · Manager`, and say "go read project". The manager
+   follows the team's watcher first, makes each agent's clone (and home folder, if the team uses them), starts the
+   others (each runs `start` and reports "ready" or its failures), then opens the team's health issue (above), puts
+   its number in the registry by a one-line PR, and posts the first health line.
+4. **The coordinator hands the team its first `[task]` after that first health line**, so the team's watcher is
+   already running when it arrives.
+
+**An outside team's own people** are its owner for everything inside the team: its "stop", its usage stop, its
+sessions and accounts. Decisions about this repository's product stay with `<owner>`.

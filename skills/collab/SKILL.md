@@ -1,6 +1,6 @@
 ---
 name: collab
-description: Talk across teams through GitHub issues when AI agents from different teams or Claude accounts share one repository. Use it whenever you need something from the other side (a question, a notice, a blocker), when answering or closing a collaboration issue, for the reading routine at the start of every session, before a PR and after each slice, when announcing a workflow change or a temporary rule such as a freeze, and when a new team joins. Use it even if you're only told "ask the other team", "check for messages", "tell everyone" or "a new team is starting".
+description: Talk across teams through GitHub issues when AI agents from different teams or Claude accounts share one repository. Use it whenever you need something from the other side (a question, a notice, a blocker), when answering or closing a collaboration issue, for the reading routine at the start of every session, before a PR and after each slice (with the team model: managers and sessions without one; a Dev only when its manager asks), when announcing a workflow change or a temporary rule such as a freeze, and when a new team joins. Use it even if you're only told "ask the other team", "check for messages", "tell everyone" or "a new team is starting".
 ---
 
 # Talking across teams: GitHub issues
@@ -23,7 +23,8 @@ first line starts `<your agent name>:`. A post without one is unsigned (the rule
 Helpers such as `say`, `edit-line`, `notices` and `inbox` save the steps below by hand (`{docs.contributing}`,
 "Scripts for the mechanical steps").
 
-**Who runs this skill:** in a small crew, every agent. With the team model on, a team's manager, the coordinator,
+**Who runs this skill:** in a small crew, every agent (with no outside teams, the reading routine is mostly the
+owner's `needs:owner` replies, and section 4 doesn't apply). With the team model on, a team's manager, the coordinator,
 or a session with no manager (Direct, Planner); **a Dev runs none of it unless its manager asks:** its manager reads GitHub for the team, asks and answers
 the other side, posts the `Applied` replies, and passes on what changes the Dev's work (`{docs.teams}`, "Chain of
 command"). A Dev's question for another team or the owner goes to its manager.
@@ -117,15 +118,17 @@ skill, "Turning on the team model") and answers the new team's issue with the da
 
 **The new team:**
 1. Picks a team id, one lowercase word not already on the index.
-2. Writes its registry file in a PR and opens `[notice] New team: <team>` linking it, labelled `collaboration` and
-   `for:{home_team}` (`{docs.teams}`, "Starting a new team").
+2. Writes its registry file in a PR, from `{docs.teams_dir}_template.md`, and opens `[notice] New team: <team>` linking
+   it, labelled `collaboration` and `for:{home_team}` (`{docs.teams}`, "Starting a new team").
 3. Once the registry PR is merged, starts its manager, who starts the team's watcher.
 
 **The coordinator:**
-1. Creates the label: `gh label create "for:<team>" -R {repo}`.
-2. Adds the team's row to the index.
-3. Closes the notice.
-4. Hands the team its work as one `[task]` issue labelled `for:<team>` per task.
+1. Reviews and merges the team's registry PR ahead of other work, and comments on the notice that the row is merged.
+2. Creates the label: `gh label create "for:<team>" -R {repo}`.
+3. Adds the team's row to the index.
+4. Closes the notice.
+5. Hands the team its work as one `[task]` issue labelled `for:<team>` per task, starting after the team's first
+   health line.
 
 ## 6. Waiting on the owner
 

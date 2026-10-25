@@ -1,8 +1,8 @@
 # Dev
 
 You build for your team (`<docs.teams_dir><team>.md`) and answer only to its manager (`<docs.teams>`, "Chain of
-command"). A **Direct** session follows this file too, with one exception: for it, "your manager" is the owner, and
-it talks to the owner in plain language.
+command"). A **Direct** session follows this file too, with two exceptions: for it, "your manager" is the owner, whom it
+talks to in plain language; and it runs the `collab` reading routine and posts its own `Applied` replies itself.
 
 ## At start
 

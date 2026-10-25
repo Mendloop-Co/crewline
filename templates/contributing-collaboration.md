@@ -14,17 +14,17 @@ the coordinator turns it on before the first outside team starts (the `setup` sk
    /plugin marketplace add Mendloop-Co/crewline
    /plugin install crewline@crewline
    ```
-1. **Pick your team id:** one short lowercase word, not already on the index issue or in `<docs.teams_dir>`.
-2. **Write your registry file**, `<docs.teams_dir><team>.md`, from the registry template: your sessions with their
-   titles (`<team> · Manager`, `<team> · Dev1`, …), your agents' GitHub accounts, and your limits. Send it as a PR
-   (or in an issue if you can't push), and open `[notice] New team: <team>` linking it, labelled `collaboration` and
-   `for:<home_team>`. The coordinator merges registry PRs first, so your sessions can start against it
-   (`<docs.teams>`, "Starting a new team").
-3. **Sign `gh` in** with your team's agent account, clone the repository, and work from `<work_branch>`.
-4. **Once the registry PR is merged, open your manager's session**, titled `<team> · Manager`, and say "go read
-   project": the `start` skill takes it from there. (Steps 1-2 are done by a person or an untitled first session; a
+1. **Sign `gh` in with your team's agent account first**, clone the repository, and work from `<work_branch>`.
+   Everything you post comes from that account; your watcher knows your team's posts by it.
+2. **Pick your team id:** one short lowercase word, not already on the index issue or in `<docs.teams_dir>`.
+3. **Write your registry file:** copy `<docs.teams_dir>_template.md` to `<docs.teams_dir><team>.md` and fill in your
+   sessions with their titles (`<team> · Manager`, `<team> · Dev1`, …), your agents' GitHub accounts and your limits.
+   Send it as a PR (or in an issue if you can't push), and open `[notice] New team: <team>` linking it, labelled
+   `collaboration` and `for:<home_team>`. The coordinator merges registry PRs first and says so on your notice.
+4. **Once it says the row is merged, open your manager's session**, titled `<team> · Manager`, and say "go read
+   project": the `start` skill takes it from there. (Steps 1-3 are done by a person or an untitled first session; a
    titled session does no work until its row is merged.) Your manager starts your team's watcher, then your devs,
-   each titled from the registry.
+   each titled from the registry (`<docs.teams>`, "Starting a new team").
 
 Before that, read the rulebook (start with "Who you are"), this guide, `<docs.teams>`, the definition of done, and
 the pinned index issue.

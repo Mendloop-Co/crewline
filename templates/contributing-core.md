@@ -2,12 +2,12 @@
 
 How work moves from an idea to production, for every agent: the home team's and any outside team's. A small crew
 needs nothing more. Once the team model is on (`team_model: true`), how each team is organised (roles, session
-titles, chain of command, context limits) is in `<docs.teams>`.
+titles, chain of command, context limits) is in the teams file that `.claude/crewline.yml` names (`docs.teams`).
 
 ## The principle
 
 Rules state goals and hard limits. Inside them, judge the real risk and act, then say what you did and why. Ask the
-**decision-holder** (the owner, or for an outside team's own feature, its lead) only for:
+**decision-holder** (the owner, or for an outside team's own feature, that team's own people) only for:
 
 - cost, or a step in an outside console;
 - granting access or permissions (accounts, roles, keys);

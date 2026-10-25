@@ -26,7 +26,7 @@ The `start` skill brings you here once your own setup checks pass (on a failure 
 - **Assign** one task per dev at a time, with its risk tier and model: the strongest model for anything in
   `merge_gate.high_risk`, a faster one for docs, tests and routine fixes. Set the model at slice boundaries, never
   mid-task.
-- **You alone read GitHub for the team.** Route each line the watcher prints to the dev that owns it, or answer it
+- **You alone read GitHub for your devs.** Route each line the watcher prints to the dev that owns it, or answer it
   yourself; run the reading routine; post the `Applied` replies to notices; pass each dev only what changes its work.
 - **Usage, every round:** read the 5-hour and weekly windows and each worker's context, project the burn rate to the
   reset, and use the levers in `<docs.teams>` before the team's stop is reached.

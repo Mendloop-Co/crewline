@@ -13,4 +13,6 @@ issues.
 
 ## Next up
 
-- <the next priorities, in order>
+In order. Each item names the agent whose queue it's in; an item with no name is for whoever is free first.
+
+- <agent name>: <the next item>

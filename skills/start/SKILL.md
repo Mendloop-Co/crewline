@@ -5,7 +5,9 @@ description: Take a fresh session from "go read project" to its working role: in
 
 # Starting a session
 
-Read `.claude/crewline.yml` first; `{…}` below are its values. This skill is only the order of steps; the rules are
+Read the settings as they are on the work branch, not in your checkout, which may be an old task branch:
+`git fetch origin`, then `git show origin/<work_branch>:.claude/crewline.yml` (`work_branch` is in your checkout's copy
+of the file). `{…}` below are its values. This skill is only the order of steps; the rules are
 in `{docs.rules}` and `{docs.contributing}` (with the team model, also `{docs.teams}` and the role files under
 `{docs.roles_dir}`). If they disagree, those files win.
 
@@ -15,9 +17,8 @@ rulebook and the role file by path from the clone the home folder's `CLAUDE.md` 
 **A small crew** (`team_model` false or unset) has no titles or registry. There, "go read project" means: pull
 `{work_branch}` in your working copy; read `{docs.rules}`, `{docs.contributing}` and `{docs.definition_of_done}`; find
 your lane on `{docs.board}`; then take your first item with the `slice` skill (the coordinator runs
-`coordinator-round` instead). A session with no lane there is from another team: it follows "Collaborating from
-another team or account" in `{docs.contributing}` instead, and asks in a `for:{home_team}` issue when unsure. The steps below are for the team
-model.
+`coordinator-round` instead). A session with no lane there is not one of the home team's agents: it follows "Who you
+are" in `{docs.rules}`. The steps below are for the team model.
 
 ## Steps
 
@@ -51,7 +52,7 @@ model.
      `Direct`. A Planner runs the `planner` skill instead; a Reviewer reads `{docs.contributing}`, "The merge
      gate".
 
-   Then do the role file's "At start" (it never calls this skill again).
+   Then do the role file's "At start" (it never calls this skill again); a Planner or Reviewer has none.
 6. **Report.** Workers send "<Role> ready: setup ok, <branch> at <short sha>" to their manager (the `report` skill)
    and wait for work; a Direct or Planner session tells the owner. The manager's report is its health line, the
    last step of its role file's "At start".

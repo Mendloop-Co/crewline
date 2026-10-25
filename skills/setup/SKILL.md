@@ -12,7 +12,8 @@ The ideas behind each step, and the failure each one fixes, are in the README's 
 The templates are in `../../templates/` relative to this skill's base directory. Show the owner each file before
 writing it. Never overwrite existing content: merge into it, and ask where it conflicts.
 
-**Which `<...>` to fill.** Fill only the values that name a setting or a doc: `<repo>`, `<owner>`, `<home_team>`,
+**Which `<...>` to fill.** In `.claude/crewline.yml`, replace every `<...>`. In the docs, fill only the values that
+name a setting or a doc: `<repo>`, `<owner>`, `<home_team>`,
 `<work_branch>`, `<production_branch>`, `<coordinator.name>`, and every `<docs.…>`, `<merge_gate.…>` and
 `<watcher.…>`. Leave every other `<...>` exactly as written (`<team>`, `<name>`, `<agent name>`, `<N>`, `<Role>`,
 `<folder>`, …): an agent fills those in each time it uses the line. The one exception is the board's lanes and its
@@ -23,14 +24,15 @@ writing it. Never overwrite existing content: merge into it, and ask where it co
    marked "team model only". If yes, set up the small crew first, then do "Turning on the team model" below in the
    same PR.
 1. **Settings.** Copy `templates/crewline.yml` to `.claude/crewline.yml`. Ask the owner only for:
-   - the repository, and the branch agents work on (`work_branch`; if it doesn't exist yet, create it from
+   - the repository, a short lowercase name for the crew (`home_team`, e.g. the repository's name), and the branch
+     agents work on (`work_branch`; if it doesn't exist yet, create it from
      `production_branch`);
    - the owner's name, and the GitHub logins the agents post from. **The usual case:** the agents post from the
      owner's own login, so that login goes in `shared_accounts` and `owner_accounts` is `[]`. A login the owner keeps
      for themselves, which the agents never use, goes in `owner_accounts`;
    - the coordinator's name and its chat's name, and how the agents sign (`agent_names`, e.g.
      `["Agent {N}", "Lead"]`);
-   - how many builders to start.
+   - how many builders to start, and the folder that holds each agent's working copy (`agents.root`).
 
    Keep the defaults for everything else (doc paths, `usage_stop`, `merge_gate`, `watcher`) and show them to the owner
    as one list to change if they want. Delete the `planner:` block if there's no planner, and `agents:` if the agents
@@ -48,7 +50,9 @@ writing it. Never overwrite existing content: merge into it, and ask where it co
      `Date | Decision | Notes | Source`. Source holds the owner's exact words and where they said them. PRs never edit
      it: they carry their rows in the body and the coordinator appends them;
    - `docs.areas` gets one `path-prefix area` line per top-level folder;
-   - `docs.status_dir` and `docs.specs` each get a `README.md`, since git can't hold an empty folder.
+   - `docs.status_dir` and `docs.specs` each get a `README.md`, since git can't hold an empty folder. The status
+     README says: one file per area, `<area>.md`, with three short lists: what works now, what's next, known
+     problems.
 
    If a doc exists, merge the missing parts into it.
 4. **GitHub templates:** `templates/pull_request_template.md` goes to `.github/pull_request_template.md`, and
@@ -62,7 +66,8 @@ writing it. Never overwrite existing content: merge into it, and ask where it co
 
    If `watcher.alert_label` is set, create that label too: `gh label create "<alert_label>" -R <repo>
    --description "A live incident; the watcher routes it first"`.
-6. **Open one PR with all of it**, `.claude/crewline.yml` included, against `work_branch`. The owner merges it before
+6. **Open one PR with all of it** from a branch such as `chore/crewline-setup`, titled `chore: set up crewline`,
+   `.claude/crewline.yml` included, against `work_branch`. The owner merges it before
    step 7, because every agent reads these files from `work_branch`.
 7. **Start the crew.** For each working copy, the coordinator's included, the owner runs the `add-agent` skill's step
    2, then opens the session with its first message from step 4. A small crew needs no watcher; run one only if the

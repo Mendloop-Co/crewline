@@ -84,7 +84,9 @@ win.
    - **Review fixes on a PR that's already ready:** put it back to draft with `gh pr ready <N> -R {repo} --undo`
      when you start them, and mark it ready again when they're done. The PR's state is the signal; without it,
      "ready again" has nothing to change.
-   - **The home team** self-merges only `{merge_gate.self_merge_ok}`. Everything else waits for the coordinator.
+   - **The home team** self-merges only `{merge_gate.self_merge_ok}`, once it's ready and its checks pass:
+     `gh pr merge <N> -R {repo} --merge --delete-branch --match-head-commit <your head sha>`. Everything else waits
+     for the coordinator.
    - **Outside teams never merge.**
 7. **After the merge:**
    - **Check, then clean up your clone.** `git fetch origin`, then check that

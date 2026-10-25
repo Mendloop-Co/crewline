@@ -14,8 +14,8 @@ keeps its chat almost empty and reports in short summaries. The same holds on ev
 - Write nothing between tool calls: no narration, plans or recaps.
 - **Where the report goes** when you finish a task or get stuck:
   - **A small crew:** write the report in your own chat; a finished task needs no message, because the PR is the
-    record and the coordinator reads the PR queue. Then carry on with your next item (the `slice` skill, "After the
-    merge"). **When you're blocked, need a decision or need `needs: clear`,** send the report to the coordinator with
+    record and the coordinator reads the PR queue. Then go on as the `slice` skill's "After the merge" says (your next item, or a
+    fresh context first). **When you're blocked, need a decision or need `needs: clear`,** send the report to the coordinator with
     your platform's session-messaging tool; without one, the report in your chat is for the owner, who passes it on.
   - **With the team model:** send it to your manager with your platform's session-messaging tool, then end the turn
     with exactly one line, `reported → <manager>`. Without such a tool, end the turn with the report itself; your

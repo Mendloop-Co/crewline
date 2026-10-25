@@ -140,8 +140,8 @@ same branch with its body copied over.
   every call and is most of an agent's cost. The rules live in the repository and the work state on GitHub, so
   nothing is lost. With a PR still open or a fix round likely, carry on in the same session, unless the context
   rule below says to clear sooner.
-- **Clear at 50% of your context.** Save your state first (task, branch, head, decisions, next step; work committed
-  and pushed), then clear at the next safe point, even with a PR open; at 80% do it now. Where you can't see your
+- **Clear at 50% of your context.** Save your state first (task, branch, head, decisions, next step, in your PR's body
+  or, with no PR, the area's status file; work committed and pushed), then clear at the next safe point, even with a PR open; at 80% do it now. Where you can't see your
   context use, every merged slice counts as 50%. Where you can't clear yourself, ask the coordinator (with the team
   model, your manager) in your report: `needs: clear`.
 - **Choose the model by the slice's risk:** the strongest for anything in `<merge_gate.high_risk>` and for design

@@ -18,7 +18,7 @@ ever kills a server on a port it doesn't own: it finds the owner first.
 |---|---|---|
 | Number `N` | the next unused number in the board's lanes | `3` |
 | Name | how your crew names chats, including the number (with the team model: the title `<home_team> · <Role>`) | `Agent 3 BUILD` (`{home_team} · Dev3`) |
-| Signs as | a name in `agent_names`, so the watcher knows its posts as signed | `Agent 3` |
+| Signs as | a name in `agent_names`, so the watcher knows its posts as signed; it is also the name on its board lane | `Agent 3` |
 | Working copy | a new folder in `{agents.root}`, never another agent's | `repo-3` |
 | Local database | its own instance and port, e.g. `{agents.db_port_pattern}` | `54333` |
 | Test ports | `{agents.api_port_pattern}` / `{agents.web_port_pattern}` | `8003` / `5176` |

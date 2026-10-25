@@ -14,15 +14,15 @@ teams. crewline is that workflow, packaged as Claude Code skills. It came out of
 |---|---|
 | **Goals and hard limits, not recipes.** Agents judge the real risk inside a short list of hard limits, and ask the owner only for cost, access, real data, legal, outward-facing and irreversible steps, and product calls. A "can't" always comes with the part that can be done. | Rulebooks that grow a rule per incident until agents follow the letter and miss the goal, or stop dead at the first limit. |
 | **One rulebook in the repository.** Everything an agent must follow lives in the repo; one topic, one home. | Rules in one machine's private settings; agents on another account follow a different standard without knowing it. |
-| **"Who you are" comes first, from the session title.** A session is `<team> · <Role>`, matched against its team's registry file; a title that doesn't match is no role. | Outside agents read your docs and take themselves for one of your agents; a session guesses its role from its folder. |
-| **Every team is a manager and its devs.** One manager per team takes the work, assigns it, reads GitHub for the team and answers for it; devs build and report. The owner's word to a dev goes through its manager, except "stop". | Several agents taking instructions from anyone who writes to them, and the plan living in five chats. |
-| **Workers report in six lines.** A dev's chat stays almost empty: a key-value report to its manager, then one closing line. | Long recaps that every later turn re-reads, and a manager reading prose to find the PR number. |
-| **Context and usage are measured.** A worker saves its state and clears at 50% of its context; each team paces its weekly budget by its burn rate and has a hard stop. | A chat that compacts itself mid-task, and a crew that runs out of usage on a Tuesday. |
+| **"Who you are" comes first.** The home crew's agents are named on the board; everyone else is an outside collaborator. With the team model, a session's title (`<team> · <Role>`), matched against its team's registry file, says who it is. | Outside agents read your docs and take themselves for one of your agents; a session guesses its role from its folder. |
+| **Grow into teams.** A small crew is a coordinator and its agents. With the team model on, every team is a manager and its devs: one manager per team takes the work, assigns it, reads GitHub for the team and answers for it; devs build and report. The owner's word to a dev goes through its manager, except "stop". | Several agents taking instructions from anyone who writes to them, and the plan living in five chats. |
+| **Workers report in six lines.** A builder's chat stays almost empty: a key-value report to the coordinator (with the team model, its manager), then one closing line. | Long recaps that every later turn re-reads, and a manager reading prose to find the PR number. |
+| **Context and usage are measured.** A worker saves its state and clears at 50% of its context; the crew (each team, with the team model) paces its weekly budget by its burn rate and has a hard stop. | A chat that compacts itself mid-task, and a crew that runs out of usage on a Tuesday. |
 | **Claims are draft PRs.** The open PR list is the live list of who does what. | Two agents building the same thing; a board nobody keeps up to date. |
 | **A risk-tiered merge gate.** Docs and chores self-merge with evidence. Auth, money, personal data, tenancy and migrations go through a coordinator plus an independent second reviewer. | Everything waits on one reviewer, or risky changes slip through as "small". |
 | **GitHub issues between teams.** One issue per topic, labelled for who must answer, every post signed. | Sessions on different accounts can't message each other, and one giant thread nobody can follow. |
 | **Nobody blocks.** State your assumption, build on it, list it in the PR. | Agents idling for hours waiting for an answer. |
-| **Every team runs a watcher.** It acknowledges new issues and routes them, and never answers. | Agents only see a comment when they look, and sessions stop between tasks. |
+| **Every team runs a watcher** (optional for a small crew with no outside teams). It acknowledges new issues and routes them, and never answers. | Agents only see a comment when they look, and sessions stop between tasks. |
 | **Ideas become plans before code.** An optional planner takes the owner's ideas, asks only what the owner alone can answer, and hands the coordinator an approved spec. | Half-formed ideas reach builders straight from chat, and the owner's "yes" exists only in someone's memory. |
 | **Workflow changes are announced.** A `for:everyone` notice, which every team acknowledges with "Applied". | A rule changes, and half the crew keeps working to the old one. |
 | **A relay is not approval, and posts are signed by form.** A decision is the owner's own words, copied exactly with where they said them. A post is signed on its first or last line, not by mention. | A coordinator's "the owner said yes" stands in for the owner. An unsigned comment from a shared account is taken for the owner's. |
@@ -48,20 +48,25 @@ Then, in your repository:
 ```
 
 Setup walks you through the settings file (`.claude/crewline.yml`) and adds the pieces your repository lacks: the
-rulebook's "Who you are" section, the collaboration rules, the team model (roles, the registry file, role files), PR
-and issue templates, labels, and a pinned index issue.
-It shows you each file before writing it.
+rulebook's "Who you are" section, the contributing guide, the definition of done, the board, PR and issue templates,
+labels, and a pinned index issue. It shows you each file before writing it.
+
+**Start small.** By default crewline sets up one small crew: a coordinator (an agent that reviews and merges), a
+few agents, and a board that says who works on what. That's all you need to start: claims as draft PRs, a merge gate
+sized by risk, one rulebook. When another team or Claude account joins, or the crew outgrows one coordinator, turn on
+the **team model** (`team_model: true`): a manager per team, titled sessions and a registry file per team. Setup's
+"Turning on the team model" does it in one PR.
 
 ## The skills
 
 | Skill | Who uses it | What it does |
 |---|---|---|
 | `crewline:setup` | the owner, once | puts the workflow into a repository |
-| `crewline:start` | every session titled `<team> · <Role>` | from "go read project" to ready: the role from the title and the registry, the account and clone checked, the rules and role file read, "ready" reported to the manager |
-| `crewline:report` | every dev and reviewer | the six-line report to the manager, and an almost empty chat |
+| `crewline:start` | every session | from "go read project" to work: the rules and the agent's lane (with the team model: the role from its title and registry, the account and clone checked, "ready" reported to its manager) |
+| `crewline:report` | builders and reviewers | the six-line report to the coordinator or manager, and an almost empty chat |
 | `crewline:slice` | every agent | starts a slice (claim with a draft PR) and finishes it (definition of done by risk, then the merge gate) |
 | `crewline:collab` | every agent | the reading routine; asking, answering and closing; announcing a change or freeze; a team joining |
-| `crewline:watcher` | each team's manager | a bundled script polls GitHub and wakes the manager only when something arrived, to acknowledge and route it; a manual tick where the script can't run |
+| `crewline:watcher` | the coordinator, or each team's manager | a bundled script polls GitHub and wakes its session only when something arrived, to acknowledge and route it; a manual tick where the script can't run |
 | `crewline:coordinator-round` | the coordinator | one review round: usage and idle agents, cross-team issues, the PR queue by risk, decisions, notices |
 | `crewline:planner` | one planner agent, optional | the owner's business ideas become plans: what exists, the owner's questions, a spec PR to the coordinator once the owner says yes |
 | `crewline:add-agent` | the owner and coordinator | adds an agent to the home crew with its own working copy, database and ports |

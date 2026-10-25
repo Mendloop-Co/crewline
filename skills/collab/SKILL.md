@@ -23,8 +23,8 @@ first line starts `<your agent name>:`. A post without one is unsigned (the rule
 Helpers such as `say`, `edit-line`, `notices` and `inbox` save the steps below by hand (`{docs.contributing}`,
 "Scripts for the mechanical steps").
 
-**Who runs this skill:** a team's manager, the coordinator, or a session with no manager (Direct, Planner, a lone
-agent). **A Dev runs none of it unless its manager asks:** its manager reads GitHub for the team, asks and answers
+**Who runs this skill:** in a small crew, every agent. With the team model on, a team's manager, the coordinator,
+or a session with no manager (Direct, Planner); **a Dev runs none of it unless its manager asks:** its manager reads GitHub for the team, asks and answers
 the other side, posts the `Applied` replies, and passes on what changes the Dev's work (`{docs.teams}`, "Chain of
 command"). A Dev's question for another team or the owner goes to its manager.
 
@@ -112,10 +112,14 @@ how they learn.
 
 ## 5. When a team joins
 
+**Only with the team model on** (`team_model: true`). If it's off, the coordinator turns it on first (the `setup`
+skill, "Turning on the team model") and answers the new team's issue with the date.
+
 **The new team:**
-1. Picks a short name, one lowercase word not already on the index.
-2. Opens `[notice] New team: <team>`, labelled `collaboration` and `for:{home_team}`.
-3. Starts its watcher (the `watcher` skill, with its team name). Every team runs one.
+1. Picks a team id, one lowercase word not already on the index.
+2. Writes its registry file in a PR and opens `[notice] New team: <team>` linking it, labelled `collaboration` and
+   `for:{home_team}` (`{docs.teams}`, "Starting a new team").
+3. Once the registry PR is merged, starts its manager, who starts the team's watcher.
 
 **The coordinator:**
 1. Creates the label: `gh label create "for:<team>" -R {repo}`.

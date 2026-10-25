@@ -18,13 +18,16 @@ owner to pass the message or restart the agent.
 ## 1. Safety first
 
 1. **Usage and context.** If your platform shows usage limits, check them first, and pace the crew by its burn rate
-   (`{docs.teams}`, "Usage and machine limits"). The hard stop is the home team's registry `Usage stop` row: at it,
-   stop the crew before the limit is hit, not after. Check each worker's context too: one at 50% or more saves its
-   state and clears (`{docs.teams}`, "Context limits").
+   (with the team model, `{docs.teams}`, "Usage and machine limits"). The hard stop is `{usage_stop}` (if it isn't set,
+   as in a 0.2 repository, the threshold in `{docs.rules}`; with the team model, the home team's registry `Usage stop`
+   row): stop the crew before it is hit, not after. Check each worker's
+   context too: one at 50% or more saves its state and clears (`{docs.contributing}`, "One working session per
+   task").
 2. **Liveness.** List the running sessions and compare against the lanes on `{docs.board}`.
    - An agent that's idle with nothing stopping it gets its next item at once.
    - **A home builder that ended or cleared its session for a fresh context** (`slice`, "After the merge") gets
-     "go read project", then its next item as a task-only brief (scope, branch, acceptance). Set its model first
+     its first message again (`add-agent`; with the team model, "go read project"), then its next item as a
+     task-only brief (scope, branch, acceptance). Set its model first
      (section 6). An outside team's builders are restarted by their own manager, never by you.
    - Refill a queue before it runs dry.
    - A "done" report isn't proof; check that its PR exists.
@@ -36,7 +39,8 @@ owner to pass the message or restart the agent.
    - **Otherwise hand it to the agent who owns the area:** look the path up in `{docs.areas}`, then the lane on the
      board.
    - **A question only the owner can decide** goes to `{owner}` with the link. Never answer it on the owner's behalf.
-2. **`[notice] New team: <team>`:** create its `for:<team>` label, add it to the index #{index_issue}, then close the
+2. **`[notice] New team: <team>`:** if `team_model` is off, turn it on first (the `setup` skill, "Turning on the
+   team model"). Merge the team's registry PR ahead of other work, create its `for:<team>` label, add it to the index #{index_issue}, then close the
    notice.
 3. **Open `for:everyone` notices:** close each one once every active team has commented `Applied`.
 4. **Outside watchers:** your watcher's `[watcher-down]` line (or, without the script, a `for:<team>` issue with no

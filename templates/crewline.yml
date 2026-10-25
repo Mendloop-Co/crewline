@@ -9,12 +9,17 @@ owner_accounts: [<github-login>]     # the owner's own GitHub accounts, or []; t
                                      # Only logins agents never post from; a shared login goes in shared_accounts only
 
 home_team: <team>                    # your own crew's label: for:<team>
+team_model: false                    # false: one small crew (a coordinator, its agents, the board). true: managers,
+                                     # titled sessions and registry files (docs.teams); turn it on when another team or
+                                     # account joins (setup skill, "Turning on the team model")
 shared_accounts: [<github-login>]    # GitHub accounts your own agents post from; watchers ignore their signed posts
 agent_names: ["Agent {N}"]           # how your own agents sign; {N} is any number. List the coordinator's and any other
                                      # name without a number too, e.g. ["Agent {N}", "Lead"]. A post is signed when its
                                      # first line starts "<name>:", or its last line is "— <name>, <team>".
                                      # Cover every "Signs as" in the home registry file; keep shared_accounts equal
                                      # to its Agent accounts
+usage_stop: <e.g. weekly 90%>         # the crew's hard usage stop: the coordinator stops the crew before it (with the
+                                     # team model, each team's registry row holds its own)
 index_issue: <number>                # the pinned "start here" index issue (setup creates it)
 
 coordinator:
@@ -24,6 +29,7 @@ coordinator:
 docs:                                # one home per topic; every other file links here
   rules: CLAUDE.md                   # the rulebook every agent loads automatically
   contributing: CONTRIBUTING.md      # branches, claims, the merge gate, collaboration
+  # The next three only with team_model: true; delete them for a small crew.
   teams: TEAMS.md                    # roles, session titles, chain of command, context and usage limits
   teams_dir: <path>/                 # one registry file per team: <team>.md (its sessions, accounts, limits)
   roles_dir: <path>/                 # one file per role: manager.md, dev.md

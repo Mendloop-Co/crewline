@@ -1,6 +1,8 @@
 # Teams: roles, titles and the chain of command
 
-How every team on this repository is organised, the home team (`<home_team>`) and each outside team alike. Goals and
+How every team on this repository is organised once the team model is on (`team_model: true`), the home team
+(`<home_team>`) and each outside team alike. A small crew (a coordinator, its agents and the board) doesn't need this
+file; turn it on when another team or account joins, or when the crew grows enough to need managers. Goals and
 hard limits only; the steps are in the skills. **Everything here is generic:** a team's own facts (its sessions,
 accounts, machine and limits) live only in its registry file, `<docs.teams_dir><team>.md`, so a new team needs no
 change to any rule, skill or script.
@@ -107,11 +109,8 @@ outside team's is labelled `collaboration` and `for:<home_team>`, so the coordin
 
 A long chat is re-read on every turn, so it costs most of a session's usage, and near its limit it compacts itself
 mid-task.
-- **Measure, don't guess.** Read the session's own context use where your platform shows it. Where it doesn't,
-  treat every merged slice as the 50% mark.
-- **A worker checks its own** at every task end and every report. **At 50% or more** it saves its state (task,
-  branch, head, decisions, next step; work committed and pushed) and clears at the next safe point, even with a PR
-  still open. **At 80% or more** it does that now.
+- **The rule** (save and clear at 50%, now at 80%, a merged slice counts as 50% where context isn't visible) is in
+  `<docs.contributing>`, "One working session per task". A worker checks its own at every task end and every report.
 - **Clearing:** a session clears or ends itself where its platform lets it. Where it can't, it saves its state and
   reports `needs: clear`; its manager clears it with a session tool where one exists, otherwise the owner clears it,
   or closes it and starts a fresh session with the same title.

@@ -3,6 +3,7 @@
 **You are not one of the home team's agents.** Your team has its own manager and devs, titled `<team> · <Role>` from your own registry file. Start with "Who you are" in the rulebook, then "Collaborating from another team or account" in the contributing guide.
 
 ## Joining
+Outside teams join once this repository's team model is on. If it isn't yet, ask the coordinator in a `for:<home_team>` issue first.
 0. Install crewline in Claude Code: `/plugin marketplace add Mendloop-Co/crewline`, then `/plugin install crewline@crewline`.
 1. Pick a team id: one lowercase word, not in the table below.
 2. Write your registry file from the template and send it as a PR, then open `[notice] New team: <team>` linking it, labelled `collaboration` and `for:<home_team>`.

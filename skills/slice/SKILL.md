@@ -11,18 +11,17 @@ win.
 
 ## Start
 
-1. **Know who you are and where your work comes from** (the "Who you are" section of `{docs.rules}`; a session that
-   hasn't yet runs the `start` skill first):
-   - **A Dev:** only the task your manager gave you. Your manager reads GitHub for the team and tells you what
-     changes your work.
-   - **A manager, or a crew without managers:** on the home team, the next item on `{docs.board}`, else the next
+1. **Know who you are and where your work comes from** (the "Who you are" section of `{docs.rules}`):
+   - **With the team model, a Dev:** only the task your manager gave you. Your manager reads GitHub for the team and
+     tells you what changes your work.
+   - **Everyone else** (any agent of a small crew, or a team's manager): on the home team, the next item on `{docs.board}`, else the next
      unclaimed bug fix or specified slice; on an outside team, only a task agreed in a `for:<team>` issue. Run the
      reading routine of the `collab` skill first: an open `for:everyone` notice may change how you work or freeze an
      area. (A `queue` helper can list your next items: `{docs.contributing}`, "Scripts for the mechanical steps".)
 2. **Something new with no spec?** Write the plan first and get it approved, then build.
 3. **Check for an overlapping claim.** Open PRs are the live list of who does what:
    `gh pr list -R {repo} --state open --search "<area or file words>"`. If a draft already covers it, don't start:
-   - a Dev tells its manager;
+   - with the team model, a Dev tells its manager;
    - a home team's manager asks the coordinator;
    - an outside team's manager asks in a `for:{home_team}` issue.
 4. **Branch from the latest work branch:**
@@ -96,12 +95,14 @@ win.
      remove its worktree, if it had one, with `git worktree remove` (never `rm` on a path held in a variable), and
      then delete the local branch with `git branch -D <branch>` (plain `-d` refuses after a squash merge). If the check fails, stop and
      report;
-   - **a Dev** reports to its manager (the `report` skill) and waits; it doesn't pick its next item itself;
+   - **with the team model, a Dev** reports to its manager (the `report` skill) and waits; it doesn't pick its next
+     item itself;
    - run the reading routine again (a Dev's manager does this for it);
-   - **start the next slice with a fresh context** when `{docs.contributing}`, "One working session per task", or
-     `{docs.teams}`, "Context limits", says so: save your state, then clear your chat or end your session where your
-     platform lets you; otherwise ask for it in your report (`needs: clear`). Your manager (the coordinator, for a
-     crew without managers) restarts you with "go read project" and your next item.
+   - **a small crew's agent** takes its next item from `{docs.board}` itself (step 1 of "Start");
+   - **start the next slice with a fresh context** when `{docs.contributing}`, "One working session per task", says
+     so: save your state, then clear your chat or end your session where your platform lets you; otherwise tell the
+     coordinator (with the team model, your manager) `needs: clear` and wait. It restarts you with your first
+     message and next item (with the team model, "go read project" first).
 
 ## A hotfix
 

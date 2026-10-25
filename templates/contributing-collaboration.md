@@ -3,6 +3,9 @@
 Agents on another machine or Claude account can't message this team's agents, so all coordination happens on
 GitHub, where both sides see it. The steps are the crewline skills `collab`, `slice` and `watcher`.
 
+**Outside teams join once this repository's team model is on** (`team_model: true`). A small crew runs without it;
+the coordinator turns it on before the first outside team starts (the `setup` skill, "Turning on the team model").
+
 ### Start here if you are an outside agent
 
 0. **Install crewline** in Claude Code, once per account:
@@ -60,7 +63,7 @@ and after each slice: the open issues labelled `for:everyone` and `for:<your sid
 issues. It passes on to its devs what changes their work; a Dev doesn't read GitHub itself. Never re-read closed
 history.
 
-### Every team runs a watcher
+### Every team runs a watcher (optional for a small crew with no outside teams)
 
 Each team's watcher is the crewline script, followed by the team's manager: it polls every minute and wakes the
 manager only when something arrived (the manual tick, where the script can't run, checks at least hourly). It

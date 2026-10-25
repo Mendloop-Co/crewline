@@ -1,7 +1,8 @@
 # Contributing
 
-How work moves from an idea to production, for every agent: the home team's and any outside team's. How each team
-is organised (roles, session titles, chain of command, context limits) is in `<docs.teams>`.
+How work moves from an idea to production, for every agent: the home team's and any outside team's. A small crew
+needs nothing more. Once the team model is on (`team_model: true`), how each team is organised (roles, session
+titles, chain of command, context limits) is in `<docs.teams>`.
 
 ## The principle
 
@@ -137,8 +138,12 @@ same branch with its body copied over.
 
 - **Start each slice in a fresh session** once none of your PRs is still open. A long conversation is re-read on
   every call and is most of an agent's cost. The rules live in the repository and the work state on GitHub, so
-  nothing is lost. With a PR still open or a fix round likely, carry on in the same session, unless `<docs.teams>`,
-  "Context limits", says to clear sooner.
+  nothing is lost. With a PR still open or a fix round likely, carry on in the same session, unless the context
+  rule below says to clear sooner.
+- **Clear at 50% of your context.** Save your state first (task, branch, head, decisions, next step; work committed
+  and pushed), then clear at the next safe point, even with a PR open; at 80% do it now. Where you can't see your
+  context use, every merged slice counts as 50%. Where you can't clear yourself, ask the coordinator (with the team
+  model, your manager) in your report: `needs: clear`.
 - **Choose the model by the slice's risk:** the strongest for anything in `<merge_gate.high_risk>` and for design
   work, a faster one for docs and routine fixes. Never switch mid-task.
 

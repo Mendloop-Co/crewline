@@ -6,10 +6,10 @@ issues.
 
 ## Lanes (the home team's agents)
 
-| Agent | Working copy | Focus | Not theirs |
-|---|---|---|---|
-| <coordinator.name> | <folder> | coordinator: the PR queue, the merge gate, this board, the decisions log | product code |
-| <agent name> | <folder> | <focus> | — |
+| Agent | Working copy | Database / test ports | Focus | Not theirs |
+|---|---|---|---|---|
+| <coordinator.name> | <folder> | — | coordinator: the PR queue, the merge gate, this board, the decisions log | product code |
+| <agent name> | <folder> | <port> / <api>, <web> | <focus> | — |
 
 ## Next up
 

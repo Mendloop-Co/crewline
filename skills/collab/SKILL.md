@@ -105,7 +105,8 @@ how they learn.
    - "comment `Applied — <name>, <team>` when done", then your signature.
 
    A freeze gets two notices, one when it starts and one when it ends.
-3. Add a line under "Recent workflow changes" in the index issue #{index_issue}. Fetch its body
+3. Add a line under "Recent workflow changes" in the index issue #{index_issue} (it exists once the team model is
+   on). Fetch its body
    (`gh issue view {index_issue} -R {repo} --json body --jq .body > body.md`), add the line, and write it back
    (`gh issue edit {index_issue} -R {repo} --body-file body.md`). Leave the rest exactly as it was, and fetch it
    fresh in the same step: an old copy undoes what someone else just changed.

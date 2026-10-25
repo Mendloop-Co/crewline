@@ -16,7 +16,7 @@ teams. crewline is that workflow, packaged as Claude Code skills. It came out of
 | **One rulebook in the repository.** Everything an agent must follow lives in the repo; one topic, one home. | Rules in one machine's private settings; agents on another account follow a different standard without knowing it. |
 | **"Who you are" comes first.** The home crew's agents are named on the board; everyone else is an outside collaborator. With the team model, a session's title (`<team> · <Role>`), matched against its team's registry file, says who it is. | Outside agents read your docs and take themselves for one of your agents; a session guesses its role from its folder. |
 | **Grow into teams.** A small crew is a coordinator and its agents. With the team model on, every team is a manager and its devs: one manager per team takes the work, assigns it, reads GitHub for the team and answers for it; devs build and report. The owner's word to a dev goes through its manager, except "stop". | Several agents taking instructions from anyone who writes to them, and the plan living in five chats. |
-| **Workers report in six lines.** A builder's chat stays almost empty: a key-value report to the coordinator (with the team model, its manager), then one closing line. | Long recaps that every later turn re-reads, and a manager reading prose to find the PR number. |
+| **Workers report in six lines.** A builder's chat stays almost empty: a key-value report in its own chat (with the team model, sent to its manager), and a message only when it needs someone. | Long recaps that every later turn re-reads, and a manager reading prose to find the PR number. |
 | **Context and usage are measured.** A worker saves its state and clears at 50% of its context; the crew (each team, with the team model) paces its weekly budget by its burn rate and has a hard stop. | A chat that compacts itself mid-task, and a crew that runs out of usage on a Tuesday. |
 | **Claims are draft PRs.** The open PR list is the live list of who does what. | Two agents building the same thing; a board nobody keeps up to date. |
 | **A risk-tiered merge gate.** Docs and chores self-merge with evidence. Auth, money, personal data, tenancy and migrations go through a coordinator plus an independent second reviewer. | Everything waits on one reviewer, or risky changes slip through as "small". |
@@ -65,7 +65,7 @@ the team files, more labels and the pinned index issue.
 |---|---|---|
 | `crewline:setup` | the owner, once | puts the workflow into a repository |
 | `crewline:start` | every session | from "go read project" to work: the rules and the agent's lane (with the team model: the role from its title and registry, the account and clone checked, "ready" reported to its manager) |
-| `crewline:report` | builders and reviewers | the six-line report to the coordinator or manager, and an almost empty chat |
+| `crewline:report` | builders and reviewers | the six-line report, and an almost empty chat |
 | `crewline:slice` | every agent | starts a slice (claim with a draft PR) and finishes it (definition of done by risk, then the merge gate) |
 | `crewline:collab` | every agent | the reading routine; asking, answering and closing; announcing a change or freeze; a team joining |
 | `crewline:watcher` | the coordinator, or each team's manager | a bundled script polls GitHub and wakes its session only when something arrived, to acknowledge and route it; a manual tick where the script can't run |

@@ -23,8 +23,9 @@ first line starts `<your agent name>:`. A post without one is unsigned (the rule
 Helpers such as `say`, `edit-line`, `notices` and `inbox` save the steps below by hand (`{docs.contributing}`,
 "Scripts for the mechanical steps").
 
-**Who runs this skill:** in a small crew, every agent (with no outside teams, the reading routine is mostly the
-owner's `needs:owner` replies, and section 4 doesn't apply). With the team model on, a team's manager, the coordinator,
+**Who runs this skill:** in a small crew, every agent, but only two parts of it: the reading routine is just
+`gh issue list -R {repo} --state open --label needs:owner`, and section 6 covers asking the owner. Sections 1-5 are
+for the team model, whose labels a small crew doesn't have. With the team model on, a team's manager, the coordinator,
 or a session with no manager (Direct, Planner); **a Dev runs none of it unless its manager asks:** its manager reads GitHub for the team, asks and answers
 the other side, posts the `Applied` replies, and passes on what changes the Dev's work (`{docs.teams}`, "Chain of
 command"). A Dev's question for another team or the owner goes to its manager.

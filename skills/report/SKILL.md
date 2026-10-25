@@ -5,16 +5,18 @@ description: How a worker session (a small crew's builder, or a Dev or Reviewer 
 
 # Worker chat and reports
 
-The owner doesn't read worker chats, and every word a session writes is re-read on each later turn. So a worker
+The owner looks at a worker's chat only when the worker is waiting on someone, and every word a session writes is
+re-read on each later turn. So a worker
 keeps its chat almost empty and reports in short summaries. The same holds on every team.
 
 ## In your own chat
 
 - Write nothing between tool calls: no narration, plans or recaps.
 - **Where the report goes** when you finish a task or get stuck:
-  - **A small crew:** write the report in your own chat; nobody needs to be sent it, because the PR is the record
-    and the coordinator reads the PR queue. Then carry on with your next item (the `slice` skill, "After the
-    merge"). Message the coordinator only for a real conflict or a decision.
+  - **A small crew:** write the report in your own chat; a finished task needs no message, because the PR is the
+    record and the coordinator reads the PR queue. Then carry on with your next item (the `slice` skill, "After the
+    merge"). **When you're blocked, need a decision or need `needs: clear`,** send the report to the coordinator with
+    your platform's session-messaging tool; without one, the report in your chat is for the owner, who passes it on.
   - **With the team model:** send it to your manager with your platform's session-messaging tool, then end the turn
     with exactly one line, `reported → <manager>`. Without such a tool, end the turn with the report itself; your
     manager, or the owner for it, reads it there. Then wait for your next task.

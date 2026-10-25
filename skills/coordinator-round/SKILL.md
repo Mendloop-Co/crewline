@@ -34,6 +34,8 @@ owner to pass the message or restart the agent.
 
 ## 2. Cross-team issues (the `collab` skill has the commands)
 
+A small crew with no outside teams skips this section, except a watcher batch if it runs one.
+
 1. **The watcher's batch, or** `gh issue list -R {repo} --state open --label for:{home_team}`:
    - **`[blocking]` first.** Answer it yourself if it's a rule or process question.
    - **Otherwise hand it to the agent who owns the area:** look the path up in `{docs.areas}`, then the lane on the

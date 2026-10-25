@@ -21,7 +21,7 @@ The `start` skill brings you here once your setup checks pass; it reports "ready
 - A question for another team or the owner goes to your manager, who opens or answers the issue. Post on GitHub only
   when your manager asks, signed as the registry says.
 - Report with the `report` skill when you finish or get stuck, then end the turn with exactly one line,
-  `reported → <manager>`, and nothing else. A Direct session instead tells the owner in plain language.
+  `reported → <manager>`, and nothing else (without a session-messaging tool, the report itself). A Direct session instead tells the owner in plain language.
 - When the task ends, clean up your clone as the `slice` skill says ("After the merge") and leave a state note. Your
   chat is cleared as `<docs.teams>`, "Context limits", says.
 

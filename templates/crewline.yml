@@ -6,7 +6,7 @@ repo: <owner>/<name>                 # the GitHub repository
 work_branch: develop                 # every slice branches from and targets this branch
 production_branch: main              # changes only through a PR a human merges; agents never merge it
 owner: <name>                        # the human who makes product and scope decisions
-owner_accounts: [<github-login>]     # the owner's own GitHub accounts, or []; the watcher routes their posts first.
+owner_accounts: []                   # the owner's own GitHub accounts, or []; the watcher routes their posts first.
                                      # Only logins agents never post from; a shared login goes in shared_accounts only
 
 home_team: <team>                    # your own crew's label: for:<team>
@@ -34,12 +34,12 @@ docs:                                # one home per topic; every other file link
   # teams: TEAMS.md                  # roles, session titles, chain of command, context and usage limits
   # teams_dir: teams/                # one registry file per team: <team>.md, plus _template.md for new teams
   # roles_dir: teams/roles/          # one file per role: manager.md, dev.md
-  definition_of_done: <path#section> # the one definition of done; #section is the heading's anchor, e.g. docs/DONE.md#done
-  board: <path>                      # lanes, queues, priorities (your own crew only)
-  decisions: <path>                  # append-only decisions log
-  areas: <path>                      # "path-prefix area" per line; longest prefix wins
-  status_dir: <path>/                # one status file per area
-  specs: <path>/                     # plans and specs, one file per topic, approved before code
+  definition_of_done: docs/DONE.md#done # the one definition of done; #section is the heading's anchor, e.g. docs/DONE.md#done
+  board: docs/BOARD.md               # lanes, queues, priorities (your own crew only)
+  decisions: docs/DECISIONS.md       # append-only decisions log
+  areas: docs/AREAS.md               # "path-prefix area" per line; longest prefix wins
+  status_dir: docs/status/           # one status file per area
+  specs: docs/specs/                 # plans and specs, one file per topic, approved before code
 
 planner:                             # optional, delete if unused: the agent that turns ideas into plans (planner skill)
   session: <chat or session name>    # the owner's approvals are read here

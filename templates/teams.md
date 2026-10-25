@@ -20,7 +20,7 @@ change to any rule, skill or script.
 What a Manager or Dev does at start and every day is in `<docs.roles_dir>manager.md` or `dev.md`; a Direct session
 follows `dev.md`, a Planner the `planner` skill, and a Reviewer `<docs.contributing>`, "The merge gate". Devs and Reviewers
 write no prose in their chat: they report in the `report` skill's format, then end the turn with exactly one line,
-`reported → <manager>`. A desktop app re-prompts after an empty turn, and anything more is re-read on every later
+`reported → <manager>` (without a session-messaging tool, the report itself). A desktop app re-prompts after an empty turn, and anything more is re-read on every later
 turn. Managers, Direct and Planners talk to the owner in plain language; a Direct session uses the report format
 only if it ever reports to a manager.
 

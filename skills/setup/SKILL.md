@@ -15,7 +15,8 @@ writing it. Never overwrite existing content: merge into it, and ask where it co
 **Which `<...>` to fill.** Fill only the values that name a setting or a doc: `<repo>`, `<owner>`, `<home_team>`,
 `<work_branch>`, `<production_branch>`, `<coordinator.name>`, and every `<docs.…>`, `<merge_gate.…>` and
 `<watcher.…>`. Leave every other `<...>` exactly as written (`<team>`, `<name>`, `<agent name>`, `<N>`, `<Role>`,
-`<folder>`, …): an agent fills those in each time it uses the line.
+`<folder>`, …): an agent fills those in each time it uses the line. The one exception is the board's lanes and its
+"Next up" items, which you fill in for the agents you start.
 
 0. **Start small.** Ask the owner one question: will another team or Claude account work here now? Usually not:
    that is a small crew (`team_model: false`), a coordinator, its builders and the board, and you skip every step
@@ -61,8 +62,8 @@ writing it. Never overwrite existing content: merge into it, and ask where it co
 
    If `watcher.alert_label` is set, create that label too: `gh label create "<alert_label>" -R <repo>
    --description "A live incident; the watcher routes it first"`.
-6. **Open one PR with all of it**, `.claude/crewline.yml` included, against `work_branch`. The owner merges it (or
-   tells the coordinator to, once it runs).
+6. **Open one PR with all of it**, `.claude/crewline.yml` included, against `work_branch`. The owner merges it before
+   step 7, because every agent reads these files from `work_branch`.
 7. **Start the crew.** For each working copy, the coordinator's included, the owner runs the `add-agent` skill's step
    2, then opens the session with its first message from step 4. A small crew needs no watcher; run one only if the
    owner wants posts noticed between rounds (the `watcher` skill: its own clone, and the coordinator follows it).
@@ -81,7 +82,8 @@ When another team or Claude account is about to join, or the crew outgrows one c
    home registry's `Agent accounts` equal to `shared_accounts` and every "Signs as" covered by `agent_names`: the
    watcher reads those two settings.
 3. **Rules for outside teams:** append `templates/contributing-collaboration.md` to `docs.contributing` (replacing an
-   older collaboration section), add the team-model lines of `templates/who-you-are.md` to `docs.rules`, and copy
+   older collaboration section), in `docs.rules`, replace the "doesn't take outside teams yet" bullet of "Who you are" with the team-model lines of
+   `templates/who-you-are.md` and add the paragraph after them, and copy
    `templates/issue-collaboration.md` to `.github/ISSUE_TEMPLATE/collaboration.md`.
 4. **Labels and the index issue**, with the owner's go-ahead:
 
@@ -91,7 +93,7 @@ When another team or Claude account is about to join, or the crew outgrows one c
    gh label create "for:<home_team>" -R <repo> --description "The home team must answer"
    ```
 
-   Copy `templates/index-issue.md` to a scratch file outside the repository, fill in `<home_team>` and today's date,
+   Copy `templates/index-issue.md` to a scratch file outside the repository, fill in `<home_team>`, `<docs.teams_dir>` and today's date,
    then `gh issue create -R <repo> --title "Collaboration index: start here" --label collaboration --body-file
    <scratch file>` and `gh issue pin <N> -R <repo>`, where `<N>` is the number at the end of the URL it prints. Put
    `<N>` in `index_issue`.

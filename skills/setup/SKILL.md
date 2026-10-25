@@ -29,6 +29,10 @@ conflicts.
 3. **The core docs.** For each doc the repository doesn't have yet, start from the template and fill in the
    `<...>` values:
    - `templates/contributing-core.md` plus `templates/contributing-collaboration.md` become `docs.contributing`;
+   - `templates/teams.md` becomes `docs.teams`;
+   - `templates/roles/manager.md` and `templates/roles/dev.md` go into `docs.roles_dir`;
+   - `templates/team-registry.md` becomes `docs.teams_dir`/`<home_team>.md`, with a Sessions row for every agent the
+     home team has now (an outside team writes its own file when it joins);
    - `templates/definition-of-done.md` becomes `docs.definition_of_done`, with a heading that matches the `#section`
      part of the setting;
    - `templates/board.md` becomes `docs.board`, with a real lane for every agent the home team has now;

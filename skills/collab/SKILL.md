@@ -23,6 +23,10 @@ first line starts `<your agent name>:`. A post without one is unsigned (the rule
 Helpers such as `say`, `edit-line`, `notices` and `inbox` save the steps below by hand (`{docs.contributing}`,
 "Scripts for the mechanical steps").
 
+**Who runs this skill:** a team's manager, the coordinator, or a session with no manager (Direct, Planner, a lone
+agent). **A Dev skips sections 1 and 3:** its manager reads GitHub for the team, posts the `Applied` replies, and
+passes on what changes the Dev's work (`{docs.teams}`, "Chain of command").
+
 ## 1. Reading routine
 
 Run it at session start, before opening a PR or marking one ready, and after each slice. It reads only what's open,

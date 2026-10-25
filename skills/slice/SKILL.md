@@ -11,13 +11,14 @@ win.
 
 ## Start
 
-1. **Know who you are and where your work comes from** (the "Who you are" section of `{docs.rules}`):
-   - **The home team:** the next item on `{docs.board}`, else the next unclaimed bug fix or specified slice.
-   - **An outside team:** only a task agreed in a `for:<team>` issue.
-
-   Run the reading routine of the `collab` skill first. An open `for:everyone` notice may change how you work or
-   freeze an area. (A `queue` helper can list your next items: `{docs.contributing}`, "Scripts for the mechanical
-   steps".)
+1. **Know who you are and where your work comes from** (the "Who you are" section of `{docs.rules}`; a session that
+   hasn't yet runs the `start` skill first):
+   - **A Dev:** only the task your manager gave you. Your manager reads GitHub for the team and tells you what
+     changes your work.
+   - **A manager, or a crew without managers:** on the home team, the next item on `{docs.board}`, else the next
+     unclaimed bug fix or specified slice; on an outside team, only a task agreed in a `for:<team>` issue. Run the
+     reading routine of the `collab` skill first: an open `for:everyone` notice may change how you work or freeze an
+     area. (A `queue` helper can list your next items: `{docs.contributing}`, "Scripts for the mechanical steps".)
 2. **Something new with no spec?** Write the plan first and get it approved, then build.
 3. **Check for an overlapping claim.** Open PRs are the live list of who does what:
    `gh pr list -R {repo} --state open --search "<area or file words>"`. If a draft already covers it, don't start:
@@ -87,7 +88,12 @@ win.
 7. **After the merge:**
    - delete the branch once no open PR uses it as its base; the coordinator retargets any children first
      (`{docs.contributing}`, "The merge gate");
-   - run the reading routine again;
+   - **clean up your clone:** switch back to `{work_branch}`, then delete the local branch, and its worktree if it
+     had one, only after `git cherry origin/{work_branch} <branch>` shows nothing unmerged and the PR says `MERGED`.
+     If anything is unmerged, stop and report instead. Remove a worktree with `git worktree remove`, never `rm` on a
+     path held in a variable;
+   - **a Dev** reports to its manager (the `report` skill) and waits; it doesn't pick its next item itself;
+   - run the reading routine again (a Dev's manager does this for it);
    - **start the next slice in a fresh session** when `{docs.contributing}`, "One working session per task", says
      so. If your platform lets an agent end its own session, do that as your last action. The coordinator restarts
      you with your first message and your next model, which needs a tool that starts or messages sessions; without

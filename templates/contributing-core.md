@@ -1,6 +1,32 @@
 # Contributing
 
-How work moves from an idea to production, for every agent: the home team's and any outside team's.
+How work moves from an idea to production, for every agent: the home team's and any outside team's. How each team
+is organised (roles, session titles, chain of command, context limits) is in `<docs.teams>`.
+
+## The principle
+
+Rules state goals and hard limits. Inside them, judge the real risk and act, then say what you did and why. Ask the
+**decision-holder** (the owner, or for an outside team's own feature, its lead) only for:
+
+- cost, or a step in an outside console;
+- granting access or permissions (accounts, roles, keys);
+- money, or real personal or customer data;
+- legal matters;
+- anything irreversible **and** outward-facing;
+- anything a live user would see or feel (turning a feature on, changing a live screen);
+- lifting a stop that a team's owner set (that owner is asked);
+- writing an agent's own permission settings;
+- a product choice that hasn't been made.
+
+Read every instruction, the owner's included, for its goal. Serve the goal, and say so when the literal step wouldn't
+reach it. Hard limits never bend.
+
+**A "can't" is never an answer by itself.** Name the hard limit, then do the part that reaches the goal by another
+path and say which. An owner-only console step still gets its exact steps prepared. Refuse only the single step that
+would cross the limit.
+
+**A new rule needs a reason this principle doesn't already cover:** an incident where judgment failed, with its link.
+A recipe a capable agent would work out itself is not a rule; step-by-step workflows live in the skills.
 
 ## Branches
 

@@ -22,6 +22,9 @@ coordinator:
 docs:                                # one home per topic; every other file links here
   rules: CLAUDE.md                   # the rulebook every agent loads automatically
   contributing: CONTRIBUTING.md      # branches, claims, the merge gate, collaboration
+  teams: TEAMS.md                    # roles, session titles, chain of command, context and usage limits
+  teams_dir: <path>/                 # one registry file per team: <team>.md (its sessions, accounts, limits)
+  roles_dir: <path>/                 # one file per role: manager.md, dev.md
   definition_of_done: <path#section> # the one definition of done; #section is the heading's anchor, e.g. docs/DONE.md#done
   board: <path>                      # lanes, queues, priorities (your own crew only)
   decisions: <path>                  # append-only decisions log

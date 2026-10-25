@@ -12,8 +12,12 @@ teams. crewline is that workflow, packaged as Claude Code skills. It came out of
 
 | Idea | The failure it fixes |
 |---|---|
+| **Goals and hard limits, not recipes.** Agents judge the real risk inside a short list of hard limits, and ask the owner only for cost, access, real data, legal, outward-facing and irreversible steps, and product calls. A "can't" always comes with the part that can be done. | Rulebooks that grow a rule per incident until agents follow the letter and miss the goal, or stop dead at the first limit. |
 | **One rulebook in the repository.** Everything an agent must follow lives in the repo; one topic, one home. | Rules in one machine's private settings; agents on another account follow a different standard without knowing it. |
-| **"Who you are" comes first.** The home crew's agents are named; everyone else is an outside collaborator. | Outside agents read your docs and take themselves for one of your agents. |
+| **"Who you are" comes first, from the session title.** A session is `<team> · <Role>`, matched against its team's registry file; a title that doesn't match is no role. | Outside agents read your docs and take themselves for one of your agents; a session guesses its role from its folder. |
+| **Every team is a manager and its devs.** One manager per team takes the work, assigns it, reads GitHub for the team and answers for it; devs build and report. The owner's word to a dev goes through its manager, except "stop". | Several agents taking instructions from anyone who writes to them, and the plan living in five chats. |
+| **Workers report in six lines.** A dev's chat stays almost empty: a key-value report to its manager, then one closing line. | Long recaps that every later turn re-reads, and a manager reading prose to find the PR number. |
+| **Context and usage are measured.** A worker saves its state and clears at 50% of its context; each team paces its weekly budget by its burn rate and has a hard stop. | A chat that compacts itself mid-task, and a crew that runs out of usage on a Tuesday. |
 | **Claims are draft PRs.** The open PR list is the live list of who does what. | Two agents building the same thing; a board nobody keeps up to date. |
 | **A risk-tiered merge gate.** Docs and chores self-merge with evidence. Auth, money, personal data, tenancy and migrations go through a coordinator plus an independent second reviewer. | Everything waits on one reviewer, or risky changes slip through as "small". |
 | **GitHub issues between teams.** One issue per topic, labelled for who must answer, every post signed. | Sessions on different accounts can't message each other, and one giant thread nobody can follow. |
@@ -44,7 +48,8 @@ Then, in your repository:
 ```
 
 Setup walks you through the settings file (`.claude/crewline.yml`) and adds the pieces your repository lacks: the
-rulebook's "Who you are" section, the collaboration rules, PR and issue templates, labels, and a pinned index issue.
+rulebook's "Who you are" section, the collaboration rules, the team model (roles, the registry file, role files), PR
+and issue templates, labels, and a pinned index issue.
 It shows you each file before writing it.
 
 ## The skills
@@ -52,6 +57,8 @@ It shows you each file before writing it.
 | Skill | Who uses it | What it does |
 |---|---|---|
 | `crewline:setup` | the owner, once | puts the workflow into a repository |
+| `crewline:start` | every session titled `<team> · <Role>` | from "go read project" to ready: the role from the title and the registry, the account and clone checked, the rules and role file read, "ready" reported to the manager |
+| `crewline:report` | every dev and reviewer | the six-line report to the manager, and an almost empty chat |
 | `crewline:slice` | every agent | starts a slice (claim with a draft PR) and finishes it (definition of done by risk, then the merge gate) |
 | `crewline:collab` | every agent | the reading routine; asking, answering and closing; announcing a change or freeze; a team joining |
 | `crewline:watcher` | one per team | run as `/loop /crewline:watcher <team>`: a bundled script polls GitHub and wakes the session only when something arrived, to acknowledge and route it; a manual tick where the script can't run |

@@ -43,38 +43,37 @@ cd {agents.root}/<folder> && git switch {work_branch}
 Set this copy's git identity if it isn't set globally. Install dependencies as the README says. Start the local
 database on the agent's own instance and port, and always run end-to-end tests on its own ports.
 
-## 3. The coordinator updates the board (one PR)
+## 3. The coordinator updates the registry and the board (one PR)
 
-- **The lane:** number, working copy, focus, and what isn't theirs.
-- **The database instance and test ports.**
+- **The registry row** in `{docs.teams_dir}{home_team}.md`, Sessions table: the title `{home_team} · Dev<N>` (or the
+  role), its model, who it answers to, its working copy, and how it signs.
+- **The lane** on `{docs.board}`: number, working copy, focus, and what isn't theirs.
+- **The database instance and test ports** (the registry's machine notes).
 - **A first queue of work**, so the agent never starts idle.
 
 ## 4. The owner opens the chat
 
-Open it in the new working copy, named as in step 1. Choose the model by the risk of its first slice. The first
-message:
+Open it in the new working copy, titled exactly as its registry row (`{home_team} · Dev<N>`). Choose the model by the
+risk of its first slice. The first message is "go read project": the `start` skill takes it from the title to
+"ready", and its manager gives it its first item.
 
-```text
-You are Agent <N> (<ROLE>) on {repo}, working only in {agents.root}/<folder> on branch {work_branch}. Your local database runs on port <db port>; your test ports are <api>/<web>. Never run anything in another agent's folder, never use git stash, and never kill a server you don't own. Read {docs.rules}, {docs.contributing} and {docs.definition_of_done}, then your lane and queue on {docs.board}. Start your first item with the slice skill, and run the collab reading routine at every session start.
-```
-
-Each new slice starts in a fresh session, so the coordinator sends this message again, with the next item.
+Each new slice starts in a fresh session, or after the worker clears its chat at its context limit
+(`{docs.teams}`, "Context limits"); the manager sends the next item.
 
 ## An agent that doesn't build
 
 A planner (the planner skill) or a watcher runs no app and no tests. It needs no local database or test ports. The
 owner only opens the chat, and the agent makes its own working copy:
 
-```text
-You are Agent <N> (<ROLE>) on {repo}. Your working copy is {agents.root}/<folder> on branch {work_branch}; if it doesn't exist, clone https://github.com/{repo}.git there and switch to {work_branch}. Never run anything in another agent's folder. Read {docs.rules}, {docs.contributing}, your lane on {docs.board} and the <role> skill, then <wait for my first idea | start>.
-```
+Its registry row names its working copy; if that folder doesn't exist, it clones `https://github.com/{repo}.git`
+there and switches to `{work_branch}`. Its first message is "go read project", like any other session.
 
 Before each new task it switches to `{work_branch}` and pulls, so the skills and plans it reads are current.
 
 ## Removing an agent
 
 Merge or save its open work as PRs first. Then:
-- the coordinator removes its lane and queue;
+- the coordinator removes its lane and queue, and its registry row;
 - the owner closes the chat;
 - the owner deletes its database instance and folder, only after `git status` and
   `git log origin/{work_branch}..HEAD` are both empty.

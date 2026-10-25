@@ -17,8 +17,10 @@ owner to pass the message or restart the agent.
 
 ## 1. Safety first
 
-1. **Usage.** If your platform shows usage limits, check them first. Stop the crew before a limit is hit, not after;
-   set the threshold with the owner and write it in `{docs.rules}`.
+1. **Usage and context.** If your platform shows usage limits, check them first, and pace the crew by its burn rate
+   (`{docs.teams}`, "Usage and machine limits"). The hard stop is the home team's registry `Usage stop` row: at it,
+   stop the crew before the limit is hit, not after. Check each worker's context too: one at 50% or more saves its
+   state and clears (`{docs.teams}`, "Context limits").
 2. **Liveness.** List the running sessions and compare against the lanes on `{docs.board}`.
    - An agent that's idle with nothing stopping it gets its next item at once.
    - **A builder that ended its session for a fresh context** (`slice`, "After the merge") gets one message to

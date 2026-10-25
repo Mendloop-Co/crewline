@@ -1,6 +1,6 @@
 ---
 name: add-agent
-description: Add another agent to the home crew working on one machine. It gives the agent its own number and name, its own working copy, local database and test ports so it never clashes with another agent, a lane on the board, a model, and a first message. Use it whenever the owner wants another agent, a lane is split, or an agent needs a clean re-setup. Use it even if you're only told "add an agent", "we need another builder" or "set up another agent". This is not for outside teams; they follow the "Start here" section of the contributing guide.
+description: Add another agent to the home crew working on one machine. It gives the agent its registry title and row, its own working copy, local database and test ports so it never clashes with another agent, a lane on the board, and a model; it starts with "go read project". Use it whenever the owner wants another agent, a lane is split, or an agent needs a clean re-setup. Use it even if you're only told "add an agent", "we need another builder" or "set up another agent". This is not for outside teams; they follow the "Start here" section of the contributing guide.
 ---
 
 # Adding an agent to the home crew
@@ -17,7 +17,8 @@ ever kills a server on a port it doesn't own: it finds the owner first.
 | Value | Rule | Example (agent 3) |
 |---|---|---|
 | Number `N` | the next unused number in the board's lanes | `3` |
-| Name | how your crew names chats, including the number | `Agent 3 BUILD` |
+| Title | `<home_team> · <Role>`, the next unused `Dev<N>` for a builder | `{home_team} · Dev3` |
+| Signs as | a name in `agent_names`, so the watcher knows its posts as signed | `Agent 3` |
 | Working copy | a new folder in `{agents.root}`, never another agent's | `repo-3` |
 | Local database | its own instance and port, e.g. `{agents.db_port_pattern}` | `54333` |
 | Test ports | `{agents.api_port_pattern}` / `{agents.web_port_pattern}` | `8003` / `5176` |
@@ -53,7 +54,8 @@ database on the agent's own instance and port, and always run end-to-end tests o
 
 ## 4. The owner opens the chat
 
-Open it in the new working copy, titled exactly as its registry row (`{home_team} · Dev<N>`). Choose the model by the
+Once the step-3 PR is merged (the `start` skill reads the row from the work branch), open it in the new
+working copy, titled exactly as its registry row (`{home_team} · Dev<N>`). Choose the model by the
 risk of its first slice. The first message is "go read project": the `start` skill takes it from the title to
 "ready", and its manager gives it its first item.
 
@@ -62,7 +64,7 @@ Each new slice starts in a fresh session, or after the worker clears its chat at
 
 ## An agent that doesn't build
 
-A planner (the planner skill) or a watcher runs no app and no tests. It needs no local database or test ports. The
+A planner (the planner skill) runs no app and no tests. It needs no local database or test ports. The
 owner only opens the chat, and the agent makes its own working copy:
 
 Its registry row names its working copy; if that folder doesn't exist, it clones `https://github.com/{repo}.git`

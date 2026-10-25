@@ -71,11 +71,27 @@ conflicts.
 
    `<N>` is the number at the end of the issue URL that `gh issue create` prints. Put it in `index_issue` in
    `.claude/crewline.yml`, and commit that one-line change by a small PR.
-8. **The starter prompt for outside agents** is `templates/starter-prompt.md`. Give it to the owner; every outside
-   agent's first message is this prompt, with its team name filled in.
-9. **Start the home team's watcher.** Give it a clone of its own on `work_branch`, which nobody else edits, so the
-   watcher can pull it. Open a session there and run `/loop /crewline:watcher <home_team>`. It needs Python 3.9+
-   and `gh` signed in; without them it falls back to a manual tick.
+8. **The starter prompt for outside teams** is `templates/starter-prompt.md`. Give it to the owner: its first part goes
+   to an untitled session that writes the team's registry PR; the team's manager opens only after that merges.
+9. **Start the home team.** Give the watcher a clone of its own on `work_branch`, which nobody else edits, and record
+   it in the home registry's `Watcher clone` row. The owner opens the home manager's session, titled
+   `<home_team> · Manager`, and says "go read project": the manager follows the watcher (the `watcher` skill), opens
+   the home team's health issue, and starts the devs. The watcher needs Python 3.9+ and `gh` signed in; without
+   them it falls back to a manual tick.
+
+## Upgrading from 0.2
+
+A repository set up with crewline 0.2 has no team model yet. Once, in one PR:
+1. Add `docs.teams`, `docs.teams_dir` and `docs.roles_dir` to `.claude/crewline.yml`.
+2. Add `templates/teams.md`, the two role files, and the home team's registry file (step 3 above), with a Sessions
+   row for every agent that runs today. Keep the registry's `Agent accounts` equal to `shared_accounts`, and every
+   "Signs as" covered by `agent_names`: the watcher still reads those two settings.
+3. Add the principle to `docs.contributing` and replace "Who you are" in `docs.rules` from the templates.
+4. After the merge, the owner retitles each running session to its registry title, and each one runs the `start`
+   skill. Until it's retitled, a session that already ran keeps its role (the note in "Who you are").
+5. Open a `for:everyone` workflow-change notice (the `collab` skill, section 4): it names the new team model and
+   asks each active outside team for its registry PR, which the coordinator merges first. Until its row is merged,
+   an outside team's existing sessions keep working under the same note.
 
 ## Branch protection
 

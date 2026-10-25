@@ -1,6 +1,6 @@
 ---
 name: watcher
-description: Run a team's GitHub watcher on a repository shared by crews of AI agents. A bundled script polls GitHub and prints one tagged line per new item, and the session wakes only then, to route each item to whoever handles it; it never answers anything itself. Every team runs one, because agents only see a new comment when they look. Use it whenever a session runs as a watcher, for example `/loop /crewline:watcher <team>`, when the watcher's monitor ended or printed a line, or when asked to check for new collaboration posts on a schedule.
+description: Run a team's GitHub watcher on a repository shared by crews of AI agents. A bundled script polls GitHub and prints one tagged line per new item, and the session wakes only then, to route each item to whoever handles it; it never answers anything itself. Every team runs one, because agents only see a new comment when they look. Use it whenever a team's manager starts or re-arms its watcher, when the watcher's monitor ended or printed a line, or when asked to check for new collaboration posts on a schedule (a crew without managers may still run it in its own session, as `/loop /crewline:watcher <team>`).
 ---
 
 # Watcher
@@ -18,10 +18,9 @@ never routes it back as `[unsigned]` or `[owner]`.
 
 Do this when you start, and again whenever routing fails.
 
-- **Watching for `{home_team}` is only for the home team's own watcher**, on the account where the coordinator's
-  session `{coordinator.session}` exists. If you can't find that session, you're on another account or machine,
-  so **you are not the home watcher**. Stop. Tell your lead you were started with the wrong team, and start again
-  as `/loop /crewline:watcher <your team>`. Don't keep watching and piling up items you can't deliver.
+- **Watching for `{home_team}` is only for the home team's manager** (the coordinator, `{coordinator.session}`), or
+  a watcher on its account. If you're not that, you're on another team, so **you are not the home watcher**. Stop,
+  and start again with your own team's id. Don't keep watching and piling up items you can't deliver.
 - **An outside team's watcher never routes to the home coordinator.** It hands items to its own team's agents.
 - **If most of what you see as "outside" posts are signed by your own team,** that's the same mistake.
 
@@ -35,7 +34,8 @@ and `gh` signed in, and it reads `.claude/crewline.yml` from the clone it runs i
 skill" that Claude Code shows when this skill loads; setup finds its templates the same way. Don't rely on
 `${CLAUDE_PLUGIN_ROOT}`: not every session sets it.
 
-**Give the watcher its own clone**, on `{work_branch}`, with no local edits. Nobody else works in it.
+**Give the watcher its own clone**, on `{work_branch}`, with no local edits (the registry's `Watcher clone`). The
+team's manager runs the monitor from there and does no other work in it; nobody else works in it.
 
 1. **Arm the monitor** from the clone's root, after `git pull -q --ff-only`. Use the Monitor tool with
    `timeout_ms` 1800000, the description "GitHub: items to route", and the command:
@@ -81,12 +81,13 @@ GH_TOKEN=$(gh auth token) python3 "<skill base dir>/../../scripts/watcher.py" --
 | `[watcher-error]` | both | GitHub or the settings couldn't be read, the clone couldn't be pulled, or a setting is unsafe (a login in both account lists). Pass it on once; the script keeps trying and says it again only after a while. |
 | `[watcher-updated]` | both | The script changed on disk and the monitor ended on purpose. Arm it again at once. |
 
-**Route a batch in one go:**
-- **Home team:** send ONE message to the coordinator's session `{coordinator.session}`, with the lines as they are.
-  That needs a tool that sends a message to another session. Without one, run the watcher inside the coordinator's
-  own session, so the lines arrive there directly, or tell the owner each batch.
-- **Outside team:** hand the lines to your team's agents however your team works: start a session with the links,
-  or tell your lead.
+**Route a batch in one go.** The team's manager follows the monitor itself (`{docs.teams}`: the watcher is a
+script, not a session), so each batch arrives in the manager's own chat:
+- **The manager** routes each line to the dev that owns it, or answers it itself. On the home team the manager is
+  the coordinator, `{coordinator.session}`.
+- **A crew without managers** (an older setup): a separate watcher session sends ONE message with the lines as they
+  are to the coordinator's session (home), or to the team's lead (outside), with a tool that messages sessions;
+  without one, tell the owner each batch.
 
 **A post is signed by its form, not by a mention:** its first line starts `<name>:` (an `agent_names` name, bold
 allowed) or `Applied — <name>`, or its last line is the sign-off `— <name>, <team>`. "Re-review by Agent 2" or

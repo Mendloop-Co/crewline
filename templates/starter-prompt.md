@@ -1,11 +1,14 @@
-Paste this as the first message of every outside agent's session. Fill in the `<…>` parts; the team name can be left
-for the agent to choose.
+An outside team starts in two steps. A titled session does no work until its registry row is merged (`<docs.teams>`,
+"Starting a new team"), so the registry is written first, by a person or by an untitled first session.
+
+**1. The registry.** Paste this into an untitled session (or follow it yourself). Fill in the `<…>` parts.
 
 ```text
-You are an outside collaborator on <repo> (branch <work_branch>), working for team <team name: one short lowercase word; if none was given, pick one>. You are NOT one of the home team's agents: their names, numbers and roles (coordinator, watcher) are not yours. Name yourself however suits your team. Before any work:
-0. If the crewline skills (e.g. /crewline:watcher) aren't available, ask your human to type these two lines in Claude Code first: "/plugin marketplace add Mendloop-Co/crewline", then "/plugin install crewline@crewline". If your team hasn't announced itself, open "[notice] New team: <team>" labelled collaboration and for:<home_team>, and make sure your team's watcher runs (/loop /crewline:watcher <team>).
-1. Pull the latest <work_branch> and read the rulebook ("Who you are" first), the contributing guide's collaboration section, the definition of done, and the pinned index issue.
-2. Your work is only what is agreed with the home team in GitHub issues. Your task now: <the agreed task, or "ask for your first task in a for:<home_team> issue">.
-3. Questions: search open issues, then open one labelled for:<home_team>, signed "— <your agent name>, <team>". Never wait for a reply: state your assumption, build on it, list it in your PR. At session start, before a PR and after each slice, read the open for:everyone and for:<team> issues and apply any notice.
-4. Every PR targets <work_branch>. You never merge, and you never touch production, secrets or real personal data.
+You are helping outside team <team id> join <repo> (branch <work_branch>). You are NOT one of the home team's agents, and you take no role yet. If the crewline skills (e.g. /crewline:start) aren't available, ask your human to type these two lines in Claude Code first: "/plugin marketplace add Mendloop-Co/crewline", then "/plugin install crewline@crewline". Then pull the latest <work_branch>, read the rulebook ("Who you are" first), the contributing guide's collaboration section and <docs.teams>, and write <docs.teams_dir><team id>.md from the registry template with your human: the sessions and their titles (<team id> · Manager, <team id> · Dev1, …), the team's agent accounts, its machine and its limits. Send it as a PR, open "[notice] New team: <team id>" labelled collaboration and for:<home_team> linking it, signed "— <your human's name>, <team id>", and stop. You never merge.
 ```
+
+**2. The manager.** Once the coordinator has merged that PR, open a session titled `<team id> · Manager` and send it
+"go read project". The `start` skill takes it from there: it reads the rules and its role file, follows the team's
+watcher, and starts the team's devs, each titled from the registry and started with "go read project" too. Its work
+is only what is agreed with the home team in `for:<team id>` issues; its team never merges, and never touches
+production, secrets or real personal data.

@@ -61,7 +61,7 @@ It shows you each file before writing it.
 | `crewline:report` | every dev and reviewer | the six-line report to the manager, and an almost empty chat |
 | `crewline:slice` | every agent | starts a slice (claim with a draft PR) and finishes it (definition of done by risk, then the merge gate) |
 | `crewline:collab` | every agent | the reading routine; asking, answering and closing; announcing a change or freeze; a team joining |
-| `crewline:watcher` | one per team | run as `/loop /crewline:watcher <team>`: a bundled script polls GitHub and wakes the session only when something arrived, to acknowledge and route it; a manual tick where the script can't run |
+| `crewline:watcher` | each team's manager | a bundled script polls GitHub and wakes the manager only when something arrived, to acknowledge and route it; a manual tick where the script can't run |
 | `crewline:coordinator-round` | the coordinator | one review round: usage and idle agents, cross-team issues, the PR queue by risk, decisions, notices |
 | `crewline:planner` | one planner agent, optional | the owner's business ideas become plans: what exists, the owner's questions, a spec PR to the coordinator once the owner says yes |
 | `crewline:add-agent` | the owner and coordinator | adds an agent to the home crew with its own working copy, database and ports |
@@ -78,8 +78,11 @@ Every skill reads your settings file, so the skills themselves contain no projec
 - **Rules hold by agreement** unless your GitHub plan lets you protect branches. The coordinator's weekly direct-push
   check is the safety net.
 - **The coordinator is a single point of failure.** Outside teams can keep working if it stops, but nothing merges.
-- **One agent can't reset its own long conversation.** Start a fresh session for each new slice; the rules live in
-  the repo, so nothing is lost.
+- **Clearing a chat may need a person.** Where an agent can't clear its own conversation or see its context use, it
+  saves its state and asks for a clear, and every merged slice counts as the 50% mark; the owner or a session tool
+  does the clear. The rules live in the repo, so nothing is lost.
+- **Two lists of accounts until 0.4.** The watcher still reads `shared_accounts` and `agent_names` from
+  `crewline.yml`; the team registry's `Agent accounts` and "Signs as" must match them.
 
 ## Licence
 

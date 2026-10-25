@@ -18,13 +18,14 @@ change to any rule, skill or script.
 What each role does at start and every day is in its role file, `<docs.roles_dir><role>.md`. Devs and Reviewers
 write no prose in their chat: they report in the `report` skill's format, then end the turn with exactly one line,
 `reported → <manager>`. A desktop app re-prompts after an empty turn, and anything more is re-read on every later
-turn. Managers, Direct and Planners talk to the owner in plain language.
+turn. Managers, Direct and Planners talk to the owner in plain language; a Direct session uses the report format
+only if it ever reports to a manager.
 
 **The watcher is not a role.** It is a script that polls GitHub (the `watcher` skill), followed by the team's manager.
 
 > **Every Dev behaves the same, in every team.** A Dev's rules come only from the repository (the rulebook, its role
 > file, the skills). No team, owner or machine adds Dev-specific rules: not in memory, not in a home-folder file, and
-> not as standing instructions in a kickoff. A manager's brief carries only the task (scope, branch, acceptance) and
+> not as standing instructions in a task brief. A manager's brief carries only the task (scope, branch, acceptance) and
 > the chain-of-command items (model, effort, stops, clears), never a rule.
 
 ## Team names
@@ -35,7 +36,8 @@ Every team has two names, both unique and both in its registry file:
   titles and signatures. It **never** changes once announced and is **never reused**, even after the team ends (an
   ended team's file stays, marked ended).
 
-An issue carries `collaboration` and `for:<who answers>`. A team's own PR carries `collaboration` only, never its own
+An issue carries `collaboration` and `for:<who answers>` (the home team's own health issue is the one exception:
+`collaboration` only, below). A team's own PR carries `collaboration` only, never its own
 `for:<id>`: that label reads as an unanswered item to the other teams' watchers.
 
 ## Session titles carry the role
@@ -93,20 +95,28 @@ folder or a worktree.
 ## Restart and health
 
 After a reboot, an app update or a usage reset, and after its own start, the manager posts one **health line**: one
-comment on its team's standing issue `[notice] Team <team>: health`, labelled `collaboration` and
-`for:<home_team>` (never `for:<team>`, which would look like an unacknowledged issue), with one row per session,
-`pass` or `FAIL`, signed. Failure details go in the session's report, not the post.
+comment on its team's standing issue `[notice] Team <team>: health`, with one row per session, `pass` or `FAIL`,
+signed. Failure details go in the session's report, not the post.
+
+The manager opens that issue once, when the team starts, and records it in the registry's `Health issue` row. An
+outside team's is labelled `collaboration` and `for:<home_team>`, so the coordinator sees it, and never
+`for:<team>`, which its own watcher would read as an issue waiting for it. The home team's is labelled
+`collaboration` only.
 
 ## Context limits
 
 A long chat is re-read on every turn, so it costs most of a session's usage, and near its limit it compacts itself
 mid-task.
-- **Measure, don't guess.** Read the session's own context use where your platform shows it.
+- **Measure, don't guess.** Read the session's own context use where your platform shows it. Where it doesn't,
+  treat every merged slice as the 50% mark.
 - **A worker checks its own** at every task end and every report. **At 50% or more** it saves its state (task,
   branch, head, decisions, next step; work committed and pushed) and clears at the next safe point, even with a PR
   still open. **At 80% or more** it does that now.
-- **A manager checks every worker** each round, tells any at 50% or more to save and clear, and sends the full
-  kickoff afterwards. It checks itself the same way.
+- **Clearing:** a session clears or ends itself where its platform lets it. Where it can't, it saves its state and
+  reports `needs: clear`; its manager clears it with a session tool where one exists, otherwise the owner clears it,
+  or closes it and starts a fresh session with the same title.
+- **A manager checks every worker** each round and tells any at 50% or more to save and clear. After the clear it
+  sends "go read project", then the worker's next item as a task-only brief. It checks itself the same way.
 
 ## Usage and machine limits
 
@@ -129,10 +139,13 @@ once per read.
 ## Starting a new team
 
 1. The team writes `<docs.teams_dir><id>.md` from the registry template, in a PR (or asks the coordinator to, in an
-   issue). Neither name may appear in another team's file, ended teams included.
+   issue), and opens `[notice] New team: <team>` linking it (the `collab` skill, "When a team joins"). Neither name
+   may appear in another team's file, ended teams included. **The coordinator reviews and merges a registry PR
+   ahead of other work**, because no session of the team can pass the `start` skill until its row is on
+   `<work_branch>`.
 2. The team's machine: tools installed, `gh` signed in as the team's agent account, disk encryption on.
 3. The manager makes each agent's clone (and home folder, if the team uses them).
-4. The owner opens the manager's chat, titled `<team> · Manager`, and says "go read project". The manager starts the
-   others, and each runs the `start` skill and reports "ready" or its failures.
-5. The manager starts the team's watcher, posts the health line, and opens `[notice] New team: <team>` linking the
-   registry file (the `collab` skill, "When a team joins").
+4. Once the registry is merged, the owner opens the manager's chat, titled `<team> · Manager`, and says "go read
+   project". The manager starts the others, and each runs the `start` skill and reports "ready" or its failures.
+5. The manager starts the team's watcher, opens the team's health issue (above) and records it in the registry, then
+   posts the first health line.

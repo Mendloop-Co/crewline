@@ -14,8 +14,10 @@ keeps its chat almost empty and reports in short summaries. The same holds on ev
 - When you finish a task or get stuck, send the report below to your manager, then end the turn with exactly one
   line, `reported → <manager>`, and nothing else. (A desktop app re-prompts after an empty turn; anything more is
   re-read on every later turn.)
-- When the owner writes to you directly, answer in the same format, not in sentences. A Direct session talks to the
-  owner in plain language and uses this format only for reports to a manager.
+- When the owner writes to you directly with an instruction, reply with the one line from `{docs.teams}`, "Chain of
+  command" ("Passed to the manager …"), and send it on to your manager. Anything else the owner asks, answer in the
+  format below, not in sentences.
+- A Direct session answers to the owner and talks to it in plain language; this skill doesn't apply to it.
 
 ## The report
 

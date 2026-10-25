@@ -137,7 +137,8 @@ same branch with its body copied over.
 
 - **Start each slice in a fresh session** once none of your PRs is still open. A long conversation is re-read on
   every call and is most of an agent's cost. The rules live in the repository and the work state on GitHub, so
-  nothing is lost. With a PR still open or a fix round likely, carry on in the same session.
+  nothing is lost. With a PR still open or a fix round likely, carry on in the same session, unless `<docs.teams>`,
+  "Context limits", says to clear sooner.
 - **Choose the model by the slice's risk:** the strongest for anything in `<merge_gate.high_risk>` and for design
   work, a faster one for docs and routine fixes. Never switch mid-task.
 

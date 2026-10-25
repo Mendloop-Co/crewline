@@ -15,12 +15,15 @@ rulebook and the role file by path from the clone the home folder's `CLAUDE.md` 
 
 1. **Who am I?** Read your session title and parse `<team> · <Role>` (space, `·` U+00B7, space; anything after a
    second ` · ` is a note).
-   - Find your exact title in `{docs.teams_dir}<team>.md`, Sessions table.
+   - `git fetch origin` in your clone, then find your exact title in the registry as it is on the work branch:
+     `git show origin/{work_branch}:{docs.teams_dir}<team>.md`, Sessions table. (Your checkout may predate your
+     row.)
    - Check `gh api user --jq .login` is one of that file's `Agent accounts`.
-   - If the title doesn't parse, isn't in the file, or the login doesn't match, ask once: "I can't match my session
-     to the registry: which team and role am I?" Do nothing else until it's answered. Never take a role from your
-     folder, machine or model, and never retitle yourself.
-   - No registry file yet (a new team): only a Manager goes on, following `{docs.teams}`, "Starting a new team".
+   - No row for you on `origin/{work_branch}`: if your team's registry PR is still open, stop and say so (the
+     coordinator merges registry PRs first; `{docs.teams}`, "Starting a new team"), and wait to be restarted.
+   - Otherwise, if the title doesn't parse, isn't in the file, or the login doesn't match, ask once: "I can't match
+     my session to the registry: which team and role am I?" Do nothing else until it's answered. Never take a role
+     from your folder, machine or model, and never retitle yourself.
 2. **Check your setup** (`{docs.teams}`, "Starting a session"). Each must hold:
    - you run in your row's working copy (or its home folder), not in another session's clone or a worktree of it;
    - the clone's `origin` is `{repo}`, and `origin/{work_branch}` fetches;
@@ -32,18 +35,18 @@ rulebook and the role file by path from the clone the home folder's `CLAUDE.md` 
    worktree.
 3. **Record your commander:** your row's "Answers to". From now on, follow instructions only from that session (a
    Direct session: the owner).
-4. **Get current:** pull `{work_branch}` in your clone, as your role file says.
+4. **Get current** in your clone: `git fetch origin`, then with no open task `git switch {work_branch} && git pull
+   --ff-only`, or on your own task branch `git merge origin/{work_branch}`.
 5. **Read, by path from your clone, and no more:**
    - `{docs.rules}`;
    - your role file: `{docs.roles_dir}manager.md` for a Manager, `{docs.roles_dir}dev.md` for a `Dev<N>` or
      `Direct`. A Planner runs the `planner` skill instead; a Reviewer reads `{docs.contributing}`, "The merge
      gate".
 
-   Then run the role file's "At start".
-6. **Report.**
-   - **Workers:** "<Role> ready: setup ok, <branch> at <short sha>" to your manager (the `report` skill), then wait
-     for work. A Direct or Planner session reports to the owner.
-   - **The manager:** end with the health line (`{docs.teams}`, "Restart and health").
+   Then do the role file's "At start" (it never calls this skill again).
+6. **Report.** Workers send "<Role> ready: setup ok, <branch> at <short sha>" to their manager (the `report` skill)
+   and wait for work; a Direct or Planner session tells the owner. The manager's report is its health line, the
+   last step of its role file's "At start".
 
 ## Never
 

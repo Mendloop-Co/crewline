@@ -12,7 +12,9 @@ home_team: <team>                    # your own crew's label: for:<team>
 shared_accounts: [<github-login>]    # GitHub accounts your own agents post from; watchers ignore their signed posts
 agent_names: ["Agent {N}"]           # how your own agents sign; {N} is any number. List the coordinator's and any other
                                      # name without a number too, e.g. ["Agent {N}", "Lead"]. A post is signed when its
-                                     # first line starts "<name>:", or its last line is "— <name>, <team>"
+                                     # first line starts "<name>:", or its last line is "— <name>, <team>".
+                                     # Cover every "Signs as" in the home registry file; keep shared_accounts equal
+                                     # to its Agent accounts
 index_issue: <number>                # the pinned "start here" index issue (setup creates it)
 
 coordinator:

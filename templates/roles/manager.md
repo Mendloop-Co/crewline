@@ -5,18 +5,19 @@ are in `<docs.teams>`. On the home team you are also the coordinator: the `coord
 
 ## At start, and after any restart, app update or usage reset
 
-1. Run the `start` skill. On any failure, tell the owner and stop.
-2. **Follow your team's watcher before anything else** (the `watcher` skill), and follow it again after every clear
-   and each time its monitor ends. When it ends with nothing new, re-arm it at once: no status check, and at most one
-   short line to the owner.
-3. Pull `<work_branch>` and run the `collab` skill's reading routine for your side.
-4. **Check the team is complete** against your registry's Sessions table: a missing session is started (by you, with
+The `start` skill brings you here once your own setup checks pass (on a failure it has already told the owner).
+
+1. **Follow your team's watcher before anything else** (the `watcher` skill, run from the registry's `Watcher
+   clone`), and follow it again after every clear and each time its monitor ends. When it ends with nothing new,
+   re-arm it at once: no status check, and at most one short line to the owner.
+2. Run the `collab` skill's reading routine for your side.
+3. **Check the team is complete** against your registry's Sessions table: a missing session is started (by you, with
    your platform's session tool where it has one, otherwise by the owner); each session's model and title match its
    row.
-5. After a restart, an app update or a usage reset only (never on a timer), send every session one "re-check": each
+4. After a restart, an app update or a usage reset only (never on a timer), send every session one "re-check": each
    re-runs the `start` skill's checks and replies. A session that fails gets no work until it passes. You never fix a
    worker's clone; it fixes its own, on your word.
-6. Post the health line.
+5. Post the health line (`<docs.teams>`, "Restart and health"); on a new team, open the health issue first.
 
 ## Every day
 

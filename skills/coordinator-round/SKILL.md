@@ -23,8 +23,9 @@ owner to pass the message or restart the agent.
    state and clears (`{docs.teams}`, "Context limits").
 2. **Liveness.** List the running sessions and compare against the lanes on `{docs.board}`.
    - An agent that's idle with nothing stopping it gets its next item at once.
-   - **A builder that ended its session for a fresh context** (`slice`, "After the merge") gets one message to
-     restart it: its first message from `add-agent`, plus "take your top item". Set its model first (section 6).
+   - **A home builder that ended or cleared its session for a fresh context** (`slice`, "After the merge") gets
+     "go read project", then its next item as a task-only brief (scope, branch, acceptance). Set its model first
+     (section 6). An outside team's builders are restarted by their own manager, never by you.
    - Refill a queue before it runs dry.
    - A "done" report isn't proof; check that its PR exists.
 

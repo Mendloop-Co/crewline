@@ -24,8 +24,9 @@ Helpers such as `say`, `edit-line`, `notices` and `inbox` save the steps below b
 "Scripts for the mechanical steps").
 
 **Who runs this skill:** a team's manager, the coordinator, or a session with no manager (Direct, Planner, a lone
-agent). **A Dev skips sections 1 and 3:** its manager reads GitHub for the team, posts the `Applied` replies, and
-passes on what changes the Dev's work (`{docs.teams}`, "Chain of command").
+agent). **A Dev runs none of it unless its manager asks:** its manager reads GitHub for the team, asks and answers
+the other side, posts the `Applied` replies, and passes on what changes the Dev's work (`{docs.teams}`, "Chain of
+command"). A Dev's question for another team or the owner goes to its manager.
 
 ## 1. Reading routine
 

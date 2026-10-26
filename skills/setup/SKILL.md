@@ -27,9 +27,13 @@ name a setting or a doc: `<repo>`, `<owner>`, `<home_team>`,
    - the repository, a short lowercase name for the crew (`home_team`, e.g. the repository's name), and the branch
      agents work on (`work_branch`; if it doesn't exist yet, create it from
      `production_branch`);
-   - the owner's name, and the GitHub logins the agents post from. **The usual case:** the agents post from the
-     owner's own login, so that login goes in `shared_accounts` and `owner_accounts` is `[]`. A login the owner keeps
-     for themselves, which the agents never use, goes in `owner_accounts`;
+   - the owner's name, and the GitHub logins the agents post from. **Recommended:** a separate GitHub account for
+     the agents (a machine user with write access): it goes in `shared_accounts`, and the owner's own login in
+     `owner_accounts`, so the owner's posts are always known as the owner's. **Quick start:** the agents post from
+     the owner's own login, which then goes in `shared_accounts`, with `owner_accounts: []`. The trade-off: GitHub
+     shows everything the agents do under the owner's name, and an unsigned comment from that login can't be told
+     from an agent's, so it is flagged rather than taken as the owner's (except on a `needs:owner` or `owner:do`
+     issue). Moving to a machine account later is a settings change;
    - the coordinator's name and its chat's name, and how the agents sign (`agent_names`, e.g.
      `["Agent {N}", "Lead"]`);
    - how many builders to start, and the folder that holds each agent's working copy (`agents.root`).

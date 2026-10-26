@@ -65,8 +65,9 @@ Never commit straight to `<work_branch>` or `<production_branch>`.
 
 - **Through the coordinator:** anything touching `<merge_gate.high_risk>`, shared platform code, or a contract
   between modules. These get an independent second reviewer too.
-- **Self-merge allowed** once the DoD evidence is in the body: `<merge_gate.self_merge_ok>`. This is for the home
-  team only; **outside teams never merge.**
+- **Self-merge allowed** once the DoD evidence is in the body: `<merge_gate.self_merge_ok>`. A UI change counts only
+  with before and after screenshots at phone and desktop widths in the PR body; without them it goes through the
+  coordinator. This is for the home team only; **outside teams never merge.**
 - **The coordinator's own changes** from a review round (decisions rows, status, the board) go in one small docs PR
   per round, which it self-merges as docs.
 - **`<production_branch>`:** only a human.

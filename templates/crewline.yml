@@ -6,14 +6,16 @@ repo: <owner>/<name>                 # the GitHub repository
 work_branch: develop                 # every slice branches from and targets this branch
 production_branch: main              # changes only through a PR a human merges; agents never merge it
 owner: <name>                        # the human who makes product and scope decisions
-owner_accounts: []                   # the owner's own GitHub accounts, or []; the watcher routes their posts first.
-                                     # Only logins agents never post from; a shared login goes in shared_accounts only
+owner_accounts: [<github-login>]     # the owner's own GitHub accounts; the watcher routes their posts first. Only
+                                     # logins agents never post from; [] when the agents post from the owner's login,
+                                     # which then goes in shared_accounts only
 
 home_team: <team>                    # your own crew's label: for:<team>
 team_model: false                    # false: one small crew (a coordinator, its agents, the board). true: managers,
                                      # titled sessions and registry files (docs.teams); turn it on when another team or
                                      # account joins (setup skill, "Turning on the team model")
-shared_accounts: [<github-login>]    # GitHub accounts your own agents post from; watchers ignore their signed posts
+shared_accounts: [<github-login>]    # GitHub accounts your own agents post from (best: a machine account of their
+                                     # own); watchers ignore their signed posts
 agent_names: ["Agent {N}"]           # how your own agents sign; {N} is any number. List the coordinator's and any other
                                      # name without a number too, e.g. ["Agent {N}", "Lead"]. A post is signed when its
                                      # first line starts "<name>:", or its last line is "— <name>, <team>".
@@ -48,7 +50,7 @@ planner:                             # optional, delete if unused: the agent tha
 
 merge_gate:                          # examples; adapt both lists to your project
   high_risk: [auth, permissions, personal data, money, multi-tenant data, schema migrations, deploy config]
-  self_merge_ok: [docs, pure UI or copy, chores]
+  self_merge_ok: [docs, copy, chores, "UI, with before/after screenshots at phone and desktop widths in the PR"]
   reviewer_model: opus               # the independent second reviewer for high-risk diffs
   max_review_cycles: 2               # a third only after a P0/P1
 

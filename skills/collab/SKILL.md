@@ -1,6 +1,6 @@
 ---
 name: collab
-description: Talk across teams through GitHub issues when AI agents from different teams or Claude accounts share one repository. Use it whenever you need something from the other side (a question, a notice, a blocker), when answering or closing a collaboration issue, for the reading routine at the start of every session, before a PR and after each slice, when announcing a workflow change or a temporary rule such as a freeze, and when a new team joins. Use it even if you're only told "ask the other team", "check for messages", "tell everyone" or "a new team is starting".
+description: Talk across teams through GitHub issues when AI agents from different teams or Claude accounts share one repository. Use it whenever you need something from the other side (a question, a notice, a blocker), when answering or closing a collaboration issue, for the reading routine at the start of every session, before a PR and after each slice (with the team model: managers and sessions without one; a Dev only when its manager asks), when announcing a workflow change or a temporary rule such as a freeze, and when a new team joins. Use it even if you're only told "ask the other team", "check for messages", "tell everyone" or "a new team is starting".
 ---
 
 # Talking across teams: GitHub issues
@@ -22,6 +22,13 @@ first line starts `<your agent name>:`. A post without one is unsigned (the rule
 
 Helpers such as `say`, `edit-line`, `notices` and `inbox` save the steps below by hand (`{docs.contributing}`,
 "Scripts for the mechanical steps").
+
+**Who runs this skill:** in a small crew, every agent, but only two parts of it: the reading routine is just
+`gh issue list -R {repo} --state open --label needs:owner`, and section 6 covers asking the owner. Sections 1-5 are
+for the team model, whose labels a small crew doesn't have. With the team model on, a team's manager, the coordinator,
+or a session with no manager (Direct, Planner); **a Dev runs none of it unless its manager asks:** its manager reads GitHub for the team, asks and answers
+the other side, posts the `Applied` replies, and passes on what changes the Dev's work (`{docs.teams}`, "Chain of
+command"). A Dev's question for another team or the owner goes to its manager.
 
 ## 1. Reading routine
 
@@ -99,7 +106,8 @@ how they learn.
    - "comment `Applied — <name>, <team>` when done", then your signature.
 
    A freeze gets two notices, one when it starts and one when it ends.
-3. Add a line under "Recent workflow changes" in the index issue #{index_issue}. Fetch its body
+3. Add a line under "Recent workflow changes" in the index issue #{index_issue} (it exists once the team model is
+   on). Fetch its body
    (`gh issue view {index_issue} -R {repo} --json body --jq .body > body.md`), add the line, and write it back
    (`gh issue edit {index_issue} -R {repo} --body-file body.md`). Leave the rest exactly as it was, and fetch it
    fresh in the same step: an old copy undoes what someone else just changed.
@@ -107,16 +115,22 @@ how they learn.
 
 ## 5. When a team joins
 
+**Only with the team model on** (`team_model: true`). If it's off, the coordinator turns it on first (the `setup`
+skill, "Turning on the team model") and answers the new team's issue with the date.
+
 **The new team:**
-1. Picks a short name, one lowercase word not already on the index.
-2. Opens `[notice] New team: <team>`, labelled `collaboration` and `for:{home_team}`.
-3. Starts its watcher (the `watcher` skill, with its team name). Every team runs one.
+1. Picks a team id, one lowercase word not already on the index.
+2. Writes its registry file in a PR, from `{docs.teams_dir}_template.md`, and opens `[notice] New team: <team>` linking
+   it, labelled `collaboration` and `for:{home_team}` (`{docs.teams}`, "Starting a new team").
+3. Once the registry PR is merged, starts its manager, who starts the team's watcher.
 
 **The coordinator:**
-1. Creates the label: `gh label create "for:<team>" -R {repo}`.
-2. Adds the team's row to the index.
-3. Closes the notice.
-4. Hands the team its work as one `[task]` issue labelled `for:<team>` per task.
+1. Reviews and merges the team's registry PR ahead of other work, and comments on the notice that the row is merged.
+2. Creates the label: `gh label create "for:<team>" -R {repo}`.
+3. Adds the team's row to the index.
+4. Closes the notice.
+5. Hands the team its work as one `[task]` issue labelled `for:<team>` per task, starting after the team's first
+   health line.
 
 ## 6. Waiting on the owner
 

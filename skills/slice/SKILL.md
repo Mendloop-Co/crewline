@@ -12,17 +12,18 @@ win.
 ## Start
 
 1. **Know who you are and where your work comes from** (the "Who you are" section of `{docs.rules}`):
-   - **The home team:** the next item on `{docs.board}`, else the next unclaimed bug fix or specified slice.
-   - **An outside team:** only a task agreed in a `for:<team>` issue.
-
-   Run the reading routine of the `collab` skill first. An open `for:everyone` notice may change how you work or
-   freeze an area. (A `queue` helper can list your next items: `{docs.contributing}`, "Scripts for the mechanical
-   steps".)
+   - **With the team model, a Dev:** only the task your manager gave you. Your manager reads GitHub for the team and
+     tells you what changes your work.
+   - **Everyone else** (any agent of a small crew, or a team's manager): on the home team, the next item on `{docs.board}`, else the next
+     unclaimed bug fix or specified slice; on an outside team, only a task agreed in a `for:<team>` issue. Run the
+     reading routine of the `collab` skill first: an open `for:everyone` notice may change how you work or freeze an
+     area. (A `queue` helper can list your next items: `{docs.contributing}`, "Scripts for the mechanical steps".)
 2. **Something new with no spec?** Write the plan first and get it approved, then build.
 3. **Check for an overlapping claim.** Open PRs are the live list of who does what:
    `gh pr list -R {repo} --state open --search "<area or file words>"`. If a draft already covers it, don't start:
-   - the home team asks the coordinator;
-   - an outside team asks in a `for:{home_team}` issue.
+   - with the team model, a Dev tells its manager;
+   - on the home team, ask the coordinator (the coordinator itself settles it with the claim's author);
+   - an outside team's manager asks in a `for:{home_team}` issue.
 4. **Branch from the latest work branch:**
    `git fetch origin && git switch -c <type>/<slug> origin/{work_branch}`. The type is `feat`, `fix`, `docs` or
    `chore`.
@@ -36,7 +37,8 @@ win.
 
    - **The scope** is the area from `{docs.areas}` that the slice mostly touches.
    - **If the slice came from an issue**, put `Refs #<issue>` in the PR body, and comment on the issue:
-     `Claimed in #<PR>. — <signature>`.
+     `Claimed in #<PR>. — <signature>`. A Dev posts that comment only if its manager asked it to; otherwise its
+     report names the PR, and the manager comments.
 
    If your project has schema migrations and the slice adds one, put its number in the title, e.g.
    `[migr <app>/<NNNN>]`, so clashes show up in the PR list. Never target `{production_branch}`, except for a
@@ -82,16 +84,27 @@ win.
    - **Review fixes on a PR that's already ready:** put it back to draft with `gh pr ready <N> -R {repo} --undo`
      when you start them, and mark it ready again when they're done. The PR's state is the signal; without it,
      "ready again" has nothing to change.
-   - **The home team** self-merges only `{merge_gate.self_merge_ok}`. Everything else waits for the coordinator.
+   - **The home team** self-merges only `{merge_gate.self_merge_ok}`, once it's ready and its checks pass:
+     `gh pr merge <N> -R {repo} --merge --delete-branch --match-head-commit <your head sha>`. Everything else waits
+     for the coordinator.
    - **Outside teams never merge.**
 7. **After the merge:**
-   - delete the branch once no open PR uses it as its base; the coordinator retargets any children first
+   - **Check, then clean up your clone.** `git fetch origin`, then check that
+     `gh pr view <PR number> -R {repo} --json state,headRefOid` says `MERGED` and that its `headRefOid` equals
+     `git rev-parse <branch>`: the merge carried everything you have, for merge and squash merges alike. If it
+     doesn't, stop and report, and leave the branch and its worktree as they are. Only when it does: switch back to
+     `{work_branch}` and pull, remove the branch's worktree if it had one with `git worktree remove` (never `rm` on a
+     path held in a variable), and delete the local branch with `git branch -D <branch>` (plain `-d` refuses after a
+     squash merge);
+   - delete the remote branch once no open PR uses it as its base; the coordinator retargets any children first
      (`{docs.contributing}`, "The merge gate");
-   - run the reading routine again;
-   - **start the next slice in a fresh session** when `{docs.contributing}`, "One working session per task", says
-     so. If your platform lets an agent end its own session, do that as your last action. The coordinator restarts
-     you with your first message and your next model, which needs a tool that starts or messages sessions; without
-     one, the owner restarts you.
+   - **report** (the `report` skill). With the team model, a Dev then waits for its manager: it doesn't pick its next
+     item or run the reading routine itself;
+   - everyone else runs the reading routine again and takes the next item (step 1 of "Start");
+   - **start the next slice with a fresh context** when `{docs.contributing}`, "One working session per task, and the
+     right model", says so: save your state, then clear your chat or end your session where your platform lets you;
+     otherwise put `needs: clear` in your report and wait. The coordinator (with the team model, your manager), or the
+     owner, restarts you with your first message and next item (with the team model, "go read project" first).
 
 ## A hotfix
 

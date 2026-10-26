@@ -17,28 +17,38 @@ owner to pass the message or restart the agent.
 
 ## 1. Safety first
 
-1. **Usage.** If your platform shows usage limits, check them first. Stop the crew before a limit is hit, not after;
-   set the threshold with the owner and write it in `{docs.rules}`.
-2. **Liveness.** List the running sessions and compare against the lanes on `{docs.board}`.
+1. **Usage and context.** If your platform shows usage limits, check them first, and pace the crew by its burn rate
+   (with the team model, `{docs.teams}`, "Usage and machine limits"). The hard stop is, first found: the home team's
+   registry `Usage stop` row (team model), then `{usage_stop}`, then a threshold in `{docs.rules}` (a 0.2 repository).
+   Stop the crew before it is hit, not after. Check each worker's context too: one at 50% or more saves its state and
+   clears (`{docs.contributing}`, "One working session per task, and the right model").
+2. **Liveness.** List the running sessions (with your platform's session tool; without one, ask the owner which are
+   running) and compare against the lanes on `{docs.board}`.
    - An agent that's idle with nothing stopping it gets its next item at once.
-   - **A builder that ended its session for a fresh context** (`slice`, "After the merge") gets one message to
-     restart it: its first message from `add-agent`, plus "take your top item". Set its model first (section 6).
+   - **A home builder that ended or cleared its session for a fresh context** (`slice`, "After the merge") gets
+     its first message again (`add-agent`; with the team model, "go read project"), then its next item as a
+     task-only brief (scope, branch, acceptance). Set its model first
+     (section 6). An outside team's builders are restarted by their own manager, never by you.
    - Refill a queue before it runs dry.
    - A "done" report isn't proof; check that its PR exists.
 
 ## 2. Cross-team issues (the `collab` skill has the commands)
+
+A small crew with no outside teams skips this section, except a watcher batch if it runs one.
 
 1. **The watcher's batch, or** `gh issue list -R {repo} --state open --label for:{home_team}`:
    - **`[blocking]` first.** Answer it yourself if it's a rule or process question.
    - **Otherwise hand it to the agent who owns the area:** look the path up in `{docs.areas}`, then the lane on the
      board.
    - **A question only the owner can decide** goes to `{owner}` with the link. Never answer it on the owner's behalf.
-2. **`[notice] New team: <team>`:** create its `for:<team>` label, add it to the index #{index_issue}, then close the
-   notice.
+2. **`[notice] New team: <team>`:** if `team_model` is off, turn it on first (the `setup` skill, "Turning on the
+   team model"). Merge the team's registry PR ahead of other work and say so on the notice, create its `for:<team>` label, add it to
+   the index #{index_issue}, then close the notice (the `collab` skill, section 5).
 3. **Open `for:everyone` notices:** close each one once every active team has commented `Applied`.
 4. **Outside watchers:** your watcher's `[watcher-down]` line (or, without the script, a `for:<team>` issue with no
    `Seen — watcher, <team>` after `{watcher.ack_hours}` hours) means that team's watcher is down, so tell the owner.
-5. **Outside teams' work:** open one `[task]` issue labelled `for:<team>` per task, from the owner's priorities.
+5. **Outside teams' work:** open one `[task]` issue labelled `for:<team>` per task, from the owner's priorities; a
+   new team's first one only after its first health line.
 
 ## 3. The PR queue
 

@@ -11,16 +11,20 @@ GitHub, where both sides see it. The steps are the crewline skills `collab`, `sl
    /plugin marketplace add Mendloop-Co/crewline
    /plugin install crewline@crewline
    ```
-1. **Name your team and announce it.** Use one short lowercase word, not already on the index issue. Open an issue
-   titled `[notice] New team: <team>`, labelled `collaboration` and `for:<home_team>`. Every agent on your team signs
-   with this name.
-2. **Start your team's watcher** (required): `/loop /crewline:watcher <team>`, in a session inside a clone.
-3. **Sign `gh` in** with your own GitHub account, clone the repository, and work from `<work_branch>`.
-4. **Read, in this order:**
-   - the rulebook (start with "Who you are");
-   - this guide;
-   - the definition of done;
-   - the pinned index issue.
+1. **Sign `gh` in with your team's agent account first**, clone the repository, and work from `<work_branch>`.
+   Everything you post comes from that account; your watcher knows your team's posts by it.
+2. **Pick your team id:** one short lowercase word, not already on the index issue or in `<docs.teams_dir>`.
+3. **Write your registry file:** copy `<docs.teams_dir>_template.md` to `<docs.teams_dir><team>.md` and fill in your
+   sessions with their titles (`<team> · Manager`, `<team> · Dev1`, …), your agents' GitHub accounts and your limits.
+   Send it as a PR (or in an issue if you can't push), and open `[notice] New team: <team>` linking it, labelled
+   `collaboration` and `for:<home_team>`. The coordinator merges registry PRs first and says so on your notice.
+4. **Once it says the row is merged, open your manager's session**, titled `<team> · Manager`, and say "go read
+   project": the `start` skill takes it from there. (Steps 1-3 are done by a person or an untitled first session; a
+   titled session does no work until its row is merged.) Your manager starts your team's watcher, then your devs,
+   each titled from the registry (`<docs.teams>`, "Starting a new team").
+
+Before that, read the rulebook (start with "Who you are"), this guide, `<docs.teams>`, the definition of done, and
+the pinned index issue.
 
 **Your work** is only what's agreed with the home team in a `for:<team>` issue. To propose something, ask in a
 `for:<home_team>` issue and start once it's agreed.
@@ -51,19 +55,22 @@ while you wait.
 
 ### What to read, and when
 
-Read at session start, before opening a PR or marking one ready, and after each slice: the open issues labelled
-`for:everyone` and `for:<your side>`, plus new replies on your own issues. Never re-read closed history.
+A team's manager (or an agent with no manager) reads at session start, before opening a PR or marking one ready,
+and after each slice: the open issues labelled `for:everyone` and `for:<your side>`, plus new replies on its own
+issues. It passes on to its devs what changes their work; a Dev doesn't read GitHub itself. Never re-read closed
+history.
 
-### Every team runs a watcher
+### Every team runs a watcher (optional for a small crew with no outside teams)
 
-Each team's watcher is the crewline script: it polls every minute and wakes its session only when something
-arrived (the manual tick, where the script can't run, checks at least hourly). It acknowledges each new
-issue for its team with `Seen — watcher, <team>`, and routes items to that team's agents. It never answers. A team's
-issue with no `Seen` after `<watcher.ack_hours>` hours (the `watcher.ack_hours` setting) means its watcher is down.
+Each team's watcher is the crewline script, followed by the team's manager: it polls every minute and wakes the
+manager only when something arrived (the manual tick, where the script can't run, checks at least hourly). It
+acknowledges each new issue for its team with `Seen — watcher, <team>`, and the manager routes each item to whoever
+owns it. The watcher never answers. A team's issue with no `Seen` after `<watcher.ack_hours>` hours (the
+`watcher.ack_hours` setting) means its watcher is down.
 
 ### When the workflow changes
 
 The change lands by PR. Then a `[notice]` labelled `for:everyone` says what changed and what to do, and a line goes
-on the index. Every agent re-reads and comments `Applied — <name>, <team>`, and the coordinator closes the notice
-once every active team has. Temporary rules (freezes, paused areas, priority changes) are announced the same way,
-once when they start and once when they end.
+on the index. Each team's manager re-reads, tells its devs what changes, and comments `Applied — <name>, <team>`, and
+the coordinator closes the notice once every active team has. Temporary rules (freezes, paused areas, priority
+changes) are announced the same way, once when they start and once when they end.

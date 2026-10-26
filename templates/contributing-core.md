@@ -1,6 +1,33 @@
 # Contributing
 
-How work moves from an idea to production, for every agent: the home team's and any outside team's.
+How work moves from an idea to production, for every agent: the home team's and any outside team's. A small crew
+needs nothing more. Once the team model is on (`team_model: true`), how each team is organised (roles, session
+titles, chain of command, context limits) is in the teams file that `.claude/crewline.yml` names (`docs.teams`).
+
+## The principle
+
+Rules state goals and hard limits. Inside them, judge the real risk and act, then say what you did and why. Ask the
+**decision-holder** (the owner, or for an outside team's own feature, that team's own people) only for:
+
+- cost, or a step in an outside console;
+- granting access or permissions (accounts, roles, keys);
+- money, or real personal or customer data;
+- legal matters;
+- anything irreversible **and** outward-facing;
+- anything a live user would see or feel (turning a feature on, changing a live screen);
+- lifting a stop that a team's owner set (that owner is asked);
+- writing an agent's own permission settings;
+- a product choice that hasn't been made.
+
+Read every instruction, the owner's included, for its goal. Serve the goal, and say so when the literal step wouldn't
+reach it. Hard limits never bend.
+
+**A "can't" is never an answer by itself.** Name the hard limit, then do the part that reaches the goal by another
+path and say which. An owner-only console step still gets its exact steps prepared. Refuse only the single step that
+would cross the limit.
+
+**A new rule needs a reason this principle doesn't already cover:** an incident where judgment failed, with its link.
+A recipe a capable agent would work out itself is not a rule; step-by-step workflows live in the skills.
 
 ## Branches
 
@@ -38,8 +65,9 @@ Never commit straight to `<work_branch>` or `<production_branch>`.
 
 - **Through the coordinator:** anything touching `<merge_gate.high_risk>`, shared platform code, or a contract
   between modules. These get an independent second reviewer too.
-- **Self-merge allowed** once the DoD evidence is in the body: `<merge_gate.self_merge_ok>`. This is for the home
-  team only; **outside teams never merge.**
+- **Self-merge allowed** once the DoD evidence is in the body: `<merge_gate.self_merge_ok>`. A UI change counts only
+  with before and after screenshots at phone and desktop widths in the PR body; without them it goes through the
+  coordinator. This is for the home team only; **outside teams never merge.**
 - **The coordinator's own changes** from a review round (decisions rows, status, the board) go in one small docs PR
   per round, which it self-merges as docs.
 - **`<production_branch>`:** only a human.
@@ -111,7 +139,12 @@ same branch with its body copied over.
 
 - **Start each slice in a fresh session** once none of your PRs is still open. A long conversation is re-read on
   every call and is most of an agent's cost. The rules live in the repository and the work state on GitHub, so
-  nothing is lost. With a PR still open or a fix round likely, carry on in the same session.
+  nothing is lost. With a PR still open or a fix round likely, carry on in the same session, unless the context
+  rule below says to clear sooner.
+- **Clear at 50% of your context.** Save your state first (task, branch, head, decisions, next step, in your PR's body
+  or, with no PR, the area's status file; work committed and pushed), then clear at the next safe point, even with a PR open; at 80% do it now. Where you can't see your
+  context use, every merged slice counts as 50%. Where you can't clear yourself, ask the coordinator (with the team
+  model, your manager) in your report: `needs: clear`.
 - **Choose the model by the slice's risk:** the strongest for anything in `<merge_gate.high_risk>` and for design
   work, a faster one for docs and routine fixes. Never switch mid-task.
 
